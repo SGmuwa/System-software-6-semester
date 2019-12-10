@@ -87,7 +87,7 @@ namespace UnitTest {
         /// <summary>
         ///   Ищет локализованную строку, похожую на n=2
         ///b=0
-        ///for(a=0,a&lt;n,a=a+1 ){b=b+1}.
+        ///for(a=0;a&lt;n;a=a+1 ){b=b+1}.
         /// </summary>
         internal static string cycle_for => ResourceManager.GetString("cycle_for", resourceCulture);
         
@@ -186,5 +186,7 @@ namespace UnitTest {
         ///print.
         /// </summary>
         internal static string Stack_var_print => ResourceManager.GetString("Stack_var_print", resourceCulture);
+
+        internal static string LangExampleJson => ResourceManager.GetString("LangExampleJson", resourceCulture);
     }
 }

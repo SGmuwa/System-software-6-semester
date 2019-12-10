@@ -5,6 +5,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using static UnitTest.LexerUnitTest;
 using static Parser.RuleOperator;
 using System.Collections.Generic;
+using System.Text.Json;
+using System.Linq;
 
 namespace UnitTest
 {
@@ -68,6 +70,16 @@ namespace UnitTest
             // Может быть 19 при реализации for как в языке Си.
             => CheckTest(Resources.Parser_for, true, 21);
 
+        [TestMethod]
+        public void Parser_finalLang()
+        {
+            ReportParser report = CheckTest(Resources.LangExample, true, 154);
+            var all = string.Join(" ", from a in report.Compile select a.Current.ToString());
+            Console.WriteLine(all);
+            Assert.AreEqual(Resources.LangExampleJson,
+                all);
+        }
+
         /// <summary>
         /// Быстрое проведение тестирования <see cref="Parser.ParserLang"/>.
         /// Удаляет жетоны с CH_.
@@ -77,7 +89,7 @@ namespace UnitTest
         /// <param name="tokens">Количество ожидаемых жетонов. Установите -1 для игнорирования.</param>
         /// <param name="parser">Особые правила парсера. Оставьте null, если нужен язык <see cref="parserLang"/>.</param>
         /// <param name="lexer">Особые правила лексера. Оставьте null, если нужен язык <see cref="lexerLang"/>.</param>
-        public void CheckTest(string resource, bool isSuccess = true, int tokens = -1, ParserLang parser = null, LexerLang lexer = null)
+        public ReportParser CheckTest(string resource, bool isSuccess = true, int tokens = -1, ParserLang parser = null, LexerLang lexer = null)
         {
             if (parser == null)
                 parser = parserLang;
@@ -98,6 +110,7 @@ namespace UnitTest
             if (tokens != -1)
                 Assert.AreEqual(tokens, listT.Count);
             Assert.AreEqual(isSuccess, report.IsSuccess);
+            return report;
         }
     }
 }

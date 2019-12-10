@@ -41,9 +41,26 @@
         /// </summary>
         public ulong Id { get; }
 
+        public bool Equals(object obj, bool idNeedEqual = true)
+        {
+            return obj is Token<T> t
+                && (this.Id.Equals(t.Id) || !idNeedEqual)
+                && this.Type.Equals(t.Type)
+                && this.Value.Equals(t.Value);
+        }
+
+        public override bool Equals(object obj)
+            => Equals(obj);
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
         public override string ToString()
         {
-            return $"{nameof(Token<T>)}[TK{Id}] {Type}: {Value}";
+            return $"{nameof(Token<T>)}[TK{Id}] {Type}: \"{Value}\"";
         }
+        
     }
 }
