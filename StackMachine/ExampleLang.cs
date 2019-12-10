@@ -9,7 +9,7 @@ namespace StackMachine
 {
     public static class ExampleLang
     {
-        public static readonly MyStackLang stackMachine = new MyStackLang();
+        public static readonly MyStackLang StackMachine = new MyStackLang();
 
         public class MyStackLang : AbstractStackExecuteLang
         {

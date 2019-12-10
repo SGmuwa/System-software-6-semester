@@ -75,4 +75,7 @@
   <data name="If" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources/If.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;UTF-8</value>
   </data>
+  <data name="LangExample" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources/LangExample.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;UTF-8</value>
+  </data>
 </root>

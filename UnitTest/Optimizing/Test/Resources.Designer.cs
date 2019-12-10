@@ -86,5 +86,6 @@ namespace Optimizing.Test {
         /// b = 2;
         /// </summary>
         internal static string If => GetString("If", Culture);
+        internal static string LangExample => GetString("LangExample", Culture);
     }
 }

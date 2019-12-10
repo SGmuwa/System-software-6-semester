@@ -54,13 +54,13 @@ namespace StackMachine.Test
             input.Close();
             List<string> Polish = Parser.ExampleLang.Lang.Compile(tokens);
             Console.WriteLine(string.Join("\n", Polish));
-            ExampleLang.stackMachine.Execute(Polish);
-            Assert.AreEqual(0, ExampleLang.stackMachine.list.Count);
-            Assert.AreEqual(1, ExampleLang.stackMachine.Variables["test1"]);
-            Assert.AreEqual(1, ExampleLang.stackMachine.Variables["test2"]);
-            Assert.AreEqual(1, ExampleLang.stackMachine.Variables["test3"]);
-            Assert.AreEqual(1, ExampleLang.stackMachine.Variables["test4"]);
-            Assert.AreEqual(1, ExampleLang.stackMachine.Variables["test"]);
+            ExampleLang.StackMachine.Execute(Polish);
+            Assert.AreEqual(0, ExampleLang.StackMachine.list.Count);
+            Assert.AreEqual(1, ExampleLang.StackMachine.Variables["test1"]);
+            Assert.AreEqual(1, ExampleLang.StackMachine.Variables["test2"]);
+            Assert.AreEqual(1, ExampleLang.StackMachine.Variables["test3"]);
+            Assert.AreEqual(1, ExampleLang.StackMachine.Variables["test4"]);
+            Assert.AreEqual(1, ExampleLang.StackMachine.Variables["test"]);
         }
 
         /// <summary>

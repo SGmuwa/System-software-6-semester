@@ -62,7 +62,7 @@ namespace StackMachine
             Console.WriteLine("-----\nПольская запись:\n-----");
             Console.WriteLine(string.Join(", ", commands));
             Console.ForegroundColor = ConsoleColor.White;
-            ExampleLang.stackMachine.Execute(commands);
+            ExampleLang.StackMachine.Execute(commands);
             Console.Write("Press eny key...");
             Console.ReadLine();
         }

@@ -31,6 +31,7 @@ namespace Optimizing.Test
             Console.WriteLine(string.Join(", ", output));
             CollectionAssert.AreEqual(new string[]{"a", "1", "1", "+", "=", "print"}, output);
         }
+        
 
         [DataTestMethod]
         [DataRow("OptimizeFirst", "a 2 = print")]
@@ -63,6 +64,29 @@ namespace Optimizing.Test
             Console.WriteLine($"optimizing:\n{string.Join(" ", output)}");
             return output;
         }
+
+        [TestMethod]
+        public void FinalLangTest()
+        {
+            StreamReader input = StringToStream(Resources.LangExample);
+            List<Token> tokens = Lexer.ExampleLang.Lang.SearchTokens(input);
+            tokens.RemoveAll((Token t) => t.Type.Name.Contains("CH_"));
+            input.Close();
+            List<string> Polish = Parser.ExampleLang.Lang.Compile(
+                tokens,
+                Example.AllOptimizing.Instance.Optimize(
+                    Parser.ExampleLang.Lang.Check(tokens)
+                )
+            );
+            Console.WriteLine(string.Join("\n", Polish));
+            StackMachine.ExampleLang.StackMachine.Execute(Polish);
+            Assert.AreEqual(0, StackMachine.ExampleLang.StackMachine.list.Count);
+            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test1"]);
+            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test2"]);
+            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test3"]);
+            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test4"]);
+            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test"]);
+        } 
 
         public static StreamReader StringToStream(string resource)
         {
