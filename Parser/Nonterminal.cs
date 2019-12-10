@@ -169,6 +169,9 @@ namespace Parser
                 case ZERO_AND_MORE:
                     output.Merge(RuleZERO_AND_MORE(deep, tokens, ref begin, ref end));
                     break;
+                case NONE:
+                    output.Info.Add(new ReportParserInfoLine("Игнорирую."));
+                    break;
                 default:
                     throw new NotImplementedException($"Оператор {Enum.GetName(typeof(RuleOperator), rule)} не реализован.");
             }

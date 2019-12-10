@@ -52,9 +52,7 @@ namespace Optimizing.Example
             foreach(var rpc in RPCToRemove)
             {
                 rpc.Clear();
-                ((ReportParserCompile)rpc.Current).CurrentRule = RuleOperator.ZERO_AND_MORE;
-                ((ReportParserCompile)rpc.Current).Source = Parser.ExampleLang.lang;
-                ((ReportParserCompile)rpc.Current).Helper = int.MinValue;
+                ((ReportParserCompile)rpc.Current).CurrentRule = RuleOperator.NONE;
             }
 
             return new ReportParser(output);
