@@ -33,48 +33,58 @@ namespace Optimizing.Example
             select (Token)a.Current;
 
             foreach(Token t in assignOpTokens)
-            {
                 t.Value = t.Id + " =";
-            }
 
-            IList<string> commands = string.Join(' ', Parser.ExampleLang.Lang.Compile((from a in treeCompileForCheckVars where a.Current is Token t select (Token)a.Current).ToList(), new ReportParser(treeCompileForCheckVars))).Split(' ');
-            HashSet<ulong> TokensToRemove = new OptimizingStackMachine().MyExecute(commands);
-
+            IList<string> commands = Parser.ExampleLang.Lang.Compile((from a in treeCompileForCheckVars where a.Current is Token t select (Token)a.Current).ToList(), new ReportParser(treeCompileForCheckVars));
+            
             foreach(Token t in assignOpTokens)
-            {
                 t.Value = "=";
-            }
+
+            
+            HashSet<ulong> TokensToRemove = new OptimizingStackMachine().MyExecute(commands);
 
             ITreeNode<object> output = compiledCode.Compile.CloneCompileTree();
 
-            var RPCToRemove = from a in output where a.Current is ReportParserCompile && a.Count == 3 && a[1].Current is Token token && TokensToRemove.Contains(token.Id)
-            select a;
+            HashSet<ITreeNode<object>> RPCToRemove = new HashSet<ITreeNode<object>>(
+                from a in output
+                where a.Current is ReportParserCompile
+                    && a.Count == 3
+                    && a[1].Current is Token token
+                    && TokensToRemove.Contains(token.Id)
+                select a);
+            ReportParserCompile none = new ReportParserCompile(new Nonterminal("none", (a, b, c) => {}, RuleOperator.NONE), RuleOperator.NONE);
+            output.ReplaceWhere(
+                (a) => RPCToRemove.Contains(a),
+                () => none);
             foreach(var rpc in RPCToRemove)
-            {
                 rpc.Clear();
-                ((ReportParserCompile)rpc.Current).CurrentRule = RuleOperator.NONE;
-            }
 
             return new ReportParser(output);
         }
 
+        /// <summary>
+        /// Класс с реализацией стековой машины, которая создана для оптимизации кода.
+        /// </summary>
         class OptimizingStackMachine : StackMachine.ExampleLang.MyStackLang
         {
             readonly DictionaryHooker myDic;
             readonly HashSet<ulong> ToRemove = new HashSet<ulong>();
+            /// <summary>
+            /// Хранит пары InstructionPointer и ID Token assign_op.
+            /// </summary>
+            public readonly IDictionary<int, ulong> assignOpIds = new Dictionary<int, ulong>();
+            /// <summary>
+            /// Получает IP последней команды "="
+            /// </summary>
+            public int LastIPAssignOp { get; private set; }
+            /// <summary>
+            /// Получает IP последней переменной.
+            /// </summary>
+            public int LastIPVar { get; private set; }
             public OptimizingStackMachine(IDictionary<string, double> startVariables = null) : base(null)
             {
                 myDic = new DictionaryHooker(this, startVariables);
                 base.Variables = myDic;
-                base.commands["="] = _ =>
-                {
-                    ulong id = ulong.Parse(Stack.Pop());
-                    double stmt = PopStk();
-                    string var = Stack.Pop();
-                    if (IsNumber(var))
-                        throw new KeyNotFoundException();
-                    Variables[var] = stmt;
-                };
             }
 
             public HashSet<ulong> MyExecute(IList<string> code)
@@ -84,12 +94,26 @@ namespace Optimizing.Example
                 return ToRemove;
             }
 
+            protected override void ExecuteCommand(string command)
+            {
+                if(command.Contains('='))
+                {
+                    assignOpIds[InstructionPointer] = ulong.Parse(command.Substring(0, command.IndexOf(' ')));
+                    LastIPAssignOp = InstructionPointer;
+                    base.ExecuteCommand("=");
+                    return;
+                }
+                if(!base.commands.ContainsKey(command))
+                { // Это переменная.
+                    LastIPVar = InstructionPointer;
+                }
+                base.ExecuteCommand(command);
+            }
+
             public IEnumerable<ulong> GetIdsOfLastSet(IList<string> code)
             {
                 foreach(var var in myDic.IsNotUsedIndexes)
-                {
-                    yield return ulong.Parse(code[var.Item1]);
-                }
+                    yield return assignOpIds[var.Item1];
             }
 
             class DictionaryHooker : IDictionary<string, double>
@@ -115,31 +139,30 @@ namespace Optimizing.Example
                 {
                     get
                     {
-                        RemoveFromIndex(key, Machine.InstructionPointer);
+                        RemoveFromIndex(Machine.LastIPAssignOp, key);
                         return Source[key];
                     }
                     set
                     {
-                        IsNotUsedIndexes.Add((Machine.InstructionPointer - 1, key));
+                        AddToIndex(Machine.LastIPAssignOp, key);
                         Source[key] = value;
                     }
                 }
 
-                private void RemoveFromIndex(string var, int ofLeft)
+                private void RemoveFromIndex(int ofLeft, string var)
                 {
                     int? indexMax = null;
                     for(int i = 0; i < IsNotUsedIndexes.Count; i++)
-                    {
                         if(var == IsNotUsedIndexes[i].Item2 && IsNotUsedIndexes[i].Item1 < ofLeft)
-                        {
                             if(!indexMax.HasValue || IsNotUsedIndexes[i].Item1 > IsNotUsedIndexes[indexMax.Value].Item1)
                                 indexMax = i;
-                        }
-                    }
                     if(indexMax.HasValue)
-                    {
                         IsNotUsedIndexes.RemoveAt(indexMax.Value);
-                    }
+                }
+
+                private void AddToIndex(int ofLeft, string var)
+                {
+                    IsNotUsedIndexes.Add((ofLeft, var));
                 }
 
                 public ICollection<string> Keys => Source.Keys;
@@ -184,7 +207,7 @@ namespace Optimizing.Example
                 {
                     foreach(var pair in Source)
                     {
-                        RemoveFromIndex(pair.Key, Machine.InstructionPointer);
+                        RemoveFromIndex(Machine.InstructionPointer, pair.Key);
                         yield return pair;
                     }
                 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace Parser
 {
@@ -16,7 +15,7 @@ namespace Parser
         /// Так, при использовании <see cref="RuleOperator.ONE_AND_MORE"/> также используются правила:
         /// <see cref="RuleOperator.ZERO_AND_MORE"/> и <see cref="RuleOperator.AND"/>.
         /// </summary>
-        public RuleOperator CurrentRule;
+        public readonly RuleOperator CurrentRule;
         /// <summary>
         /// Для AND не нужен.
         /// Для OR - идентификатор следующего шага.
@@ -30,8 +29,6 @@ namespace Parser
         public ulong Id { get; }
 
         private readonly static Random ran = new Random();
-
-        private readonly HashSet<ulong> IdsDebug = new HashSet<ulong>();
 
         /// <summary>
         /// Создание нового экземпляра инструкции компилятору.
