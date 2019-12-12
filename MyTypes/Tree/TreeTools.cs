@@ -67,6 +67,23 @@ namespace MyTypes.Tree
                     node.Current = replaceGenerator();
         }
 
+        /// <summary>
+        /// Заменяет все экземпляры в узлах деревьев на новые элементы
+        /// по указанному предикату.
+        /// Замена корня не поддерживается.
+        /// </summary>
+        /// <param name="root">Начало дерева, его корень.</param>
+        /// <param name="match">Метод, который определяет, какие элементы должны быть заменены.</param>
+        /// <param name="replaceGenerator">Генератор объектов, которые будут помещены в дерево.</param>
+        public static void ReplaceWhere<T>(this ITreeNode<T> root, Predicate<ITreeNode<T>> match, Func<ITreeNode<T>> replaceGenerator)
+        {
+            for(int i = 0; i < root.Count; i++)
+                if(match(root[i]))
+                    root[i] = replaceGenerator();
+                else
+                    root[i].ReplaceWhere(match, replaceGenerator);
+        }
+
         public static string ToString<T>(this ITreeNode<T> root, StringFormat sf)
         {
             if (root == null)

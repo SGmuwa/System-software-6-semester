@@ -51,17 +51,17 @@ namespace Optimizing.Test
                 tokens = Lexer.ExampleLang.Lang.SearchTokens(stream);
             tokens.RemoveAll(t => t.Type.Name.StartsWith("CH_"));
             Console.WriteLine($"tokens:\n{string.Join('\n', tokens)}");
-            var checkedTokens = Parser.ExampleLang.Lang.Check(tokens);
-            Console.WriteLine($"preLang:\n{checkedTokens}");
-            Console.WriteLine($"PreStackMachine:\n{string.Join(" ", Parser.ExampleLang.Lang.Compile(tokens, checkedTokens))}");
-            Assert.IsTrue(checkedTokens.IsSuccess, "Ошибка компиляции.");
+            var reportParser = Parser.ExampleLang.Lang.Check(tokens);
+            Console.WriteLine($"preLang:\n{reportParser}");
+            Console.WriteLine($"PreStackMachine:\n{string.Join(" ", Parser.ExampleLang.Lang.Compile(tokens, reportParser))}");
+            var reportParserOptimize = Example.AllOptimizing.Instance.Optimize(reportParser);
+            Console.WriteLine($"postLang:\n{reportParserOptimize}");
+            Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
             var output = Parser.ExampleLang.Lang.Compile(
                 tokens,
-                Example.AllOptimizing.Instance.Optimize(
-                    checkedTokens
-                )
+                reportParserOptimize
             );
-            Console.WriteLine($"optimizing:\n{string.Join(" ", output)}");
+            Console.WriteLine($"optimizing:\n{string.Join("; ", output)}");
             return output;
         }
 

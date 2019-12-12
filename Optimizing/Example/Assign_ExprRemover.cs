@@ -52,12 +52,11 @@ namespace Optimizing.Example
                     && a[1].Current is Token token
                     && TokensToRemove.Contains(token.Id)
                 select a);
+            Console.WriteLine($"Remove need:\n{string.Join("\n", RPCToRemove)}");
             ReportParserCompile none = new ReportParserCompile(new Nonterminal("none", (a, b, c) => {}, RuleOperator.NONE), RuleOperator.NONE);
             output.ReplaceWhere(
                 (a) => RPCToRemove.Contains(a),
-                () => none);
-            foreach(var rpc in RPCToRemove)
-                rpc.Clear();
+                () => new TreeNode<object>(none));
 
             return new ReportParser(output);
         }
