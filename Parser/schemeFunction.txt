@@ -1,0 +1,135 @@
+Как же вставлять функции в постфиксную запись?
+
+myFunction = () => {
+    print(2)
+}
+
+myFunction()
+
+
+myFunction
+5
+=
+8
+goto
+2
+print
+$functionExit
+myFunction
+$functionCall
+
+А если у функции есть аргументы?
+
+myFunction = (x) => {
+    print(x)
+}
+
+myFunction(2)
+
+
+myFunction
+5
+=
+10
+goto
+x
+=$inverse
+x
+print
+$functionExit
+2
+myFunction
+$functionCall
+
+=$inverse отличается от = тем, что вместо x = 0 надо писать 0 = x, значение передаётся вправо.
+Вместо x 0 = получится 0 x =$inverse
+$functionExit используется для того, чтобы указать стековой машине, что надо покинуть функцию.
+Получается, print - тоже функция?
+
+
+myFunction
+5
+=
+11
+goto
+x
+=$inverse
+x
+print
+$functionCall
+$functionExit
+2
+myFunction
+$functionCall
+
+А если два аргумента?
+myFunction = (x, y) => {
+    print(x)
+    print(y)
+}
+
+myFunction(555, 777)
+
+
+
+
+
+
+
+
+myFunction
+5
+=
+13
+goto
+x
+=$inverse
+y
+=$inverse
+x
+print
+$functionCall
+$functionExit
+777
+555
+myFunction
+$functionCall
+
+$functionCall используется вместо goto так как стековой машине надо помнить, куда надо возвращаться
+при вызове команды $functionExit.
+
+А что делать, если функция что-то возвращает?
+myFunction = (x, y) => {
+    print(x)
+    print(y)
+    return x + y
+}
+out = myFunction(555, 777)
+print(out)
+
+myFunction
+5
+=
+?
+goto
+x
+=$inverse
+y
+=$inverse
+x
+print
+$functionCall
+x
+y
++
+$functionExit
+out
+777
+555
+myFunction
+$functionCall
+=
+out
+print
+$functionCall
+

@@ -188,5 +188,7 @@ namespace UnitTest {
         internal static string Stack_var_print => ResourceManager.GetString("Stack_var_print", resourceCulture);
 
         internal static string LangExampleJson => ResourceManager.GetString("LangExampleJson", resourceCulture);
+
+        internal static string function => ResourceManager.GetString("function", resourceCulture);
     }
 }

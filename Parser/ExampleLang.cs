@@ -57,8 +57,11 @@ namespace Parser
                        )
                    )
                ),
-            b_val_expr = new Nonterminal(nameof(b_val_expr),
-               OrInserter, OR, new Nonterminal("L_B stmt R_B", AndInserter(1), AND, L_B, stmt, R_B), stmt),
+            function_expr = new Nonterminal(nameof(function_expr), AndInserter(), L_B, args, R_B),
+            b_val_expr = new Nonterminal(nameof(b_val_expr), OrInserter, OR,
+                function_expr,
+                new Nonterminal("L_B stmt R_B", AndInserter(1), AND, L_B, stmt, R_B),
+                stmt),
             body = new Nonterminal(nameof(body), AndInserter(1), AND, "L_QB", lang, "R_QB"),
             condition = new Nonterminal(nameof(condition), AndInserter(1), AND, L_B, stmt, R_B),
             for_condition = new Nonterminal(nameof(condition), AndInserter(0), AND, stmt),

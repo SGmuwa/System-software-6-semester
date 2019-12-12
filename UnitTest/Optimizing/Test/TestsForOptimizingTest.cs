@@ -34,10 +34,10 @@ namespace Optimizing.Test
         
 
         [DataTestMethod]
-        //[DataRow("OptimizeFirst", "a 2 = print")]
-        //[DataRow("VarInVar", "a 3 = b 6 = print")]
+        [DataRow("OptimizeFirst", "a 2 = print")]
+        [DataRow("VarInVar", "a 3 = b 6 = print")]
         [DataRow("VarVarInVar", "a 7 = b 14 = print")]
-        //[DataRow("If", "1 6 !f a 1 = b 2 = print")]
+        [DataRow("If", "1 6 !f a 1 = b 2 = print")]
         public void OptimizingSimple(string resourceName, string expect)
         {
             var output = CompileAndOptimizing(Resources.GetString(resourceName));

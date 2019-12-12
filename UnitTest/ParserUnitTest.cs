@@ -66,6 +66,10 @@ namespace UnitTest
             => CheckTest(Resources.Parser_do_while, true, 10);
 
         [TestMethod]
+        public void Parser_function()
+            => CheckTest(Resources.function, true, 14);
+
+        [TestMethod]
         public void Parser_for()
             // Может быть 19 при реализации for как в языке Си.
             => CheckTest(Resources.Parser_for, true, 21);

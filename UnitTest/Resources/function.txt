@@ -1,0 +1,5 @@
+myFunction = () => {
+    print(2)
+}
+
+myFunction()

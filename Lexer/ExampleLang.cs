@@ -29,6 +29,7 @@ namespace Lexer
                 LIST_CONTAINS    = new Terminal(nameof(LIST_CONTAINS),    "^LIST_CONTAINS$"         ),
                 LIST_REMOVE      = new Terminal(nameof(LIST_REMOVE),      "^LIST_REMOVE$"           ),
                 LIST_COUNT       = new Terminal(nameof(LIST_COUNT),       "^LIST_COUNT$"            ),
+                IMPLICATION      = new Terminal(nameof(IMPLICATION),      "^=>$"                    ),
                 /*                                                                                 
                  Те терминалы, которые ниже, по-сути нужны парсеру.                                
                  Для того, чтобы проанализировать выражение:                                       
@@ -48,7 +49,7 @@ namespace Lexer
                 ASSIGN_OP, VAR, DIGIT, OP, WHILE_KW, DO_KW, PRINT_KW,
                 FOR_KW, IF_KW, ELSE_KW, L_QB, R_QB, L_B, R_B, COMMA, COM,
                 HASHSET_ADD, HASHSET_CONTAINS, HASHSET_REMOVE, HASHSET_COUNT, LIST_ADD, LIST_CONTAINS,
-                LIST_REMOVE, LIST_COUNT, CH_LISTORSETMAYBE, CH_COMMENT, CH_SPACE, CH_LEFTLINE, CH_NEWLINE, CH_TAB
+                LIST_REMOVE, LIST_COUNT, IMPLICATION, CH_LISTORSETMAYBE, CH_COMMENT, CH_SPACE, CH_LEFTLINE, CH_NEWLINE, CH_TAB
             });
     }
 }
