@@ -110,7 +110,7 @@ print(out)
 myFunction
 5
 =
-?
+16
 goto
 x
 =$inverse
@@ -132,4 +132,177 @@ $functionCall
 out
 print
 $functionCall
+
+А если возвращаемое значение не нужно?
+
+myFunction = (x, y) => {
+    print(x)
+    print(y)
+    return x + y
+}
+myFunction(555, 777)
+print(999)
+
+
+
+
+
+myFunction
+5
+=
+19
+goto
+x
+=$inverse
+y
+=$inverse
+x
+print
+$functionCall
+y
+print
+$functionCall
+x
+y
++
+$functionExit
+777
+555
+myFunction
+$functionCall
+$stackPopDrop
+999
+print
+$functionCall
+
+$stackPopDrop - выполняет pop стека и не забывает об этом элементе.
+
+Может, всё-таки как-то с goto сделать?
+
+myFunction = (x, y) => {
+    print(x)
+    print(y)
+    return x + y
+}
+out = myFunction(555, 777)
+print(out)
+
+myFunction
+5
+=
+22
+goto
+x
+=$inverse
+y
+=$inverse
+13
+x
+print
+goto
+17
+y
+print
+goto
+x
+y
++
+$stackSwapLast2 // Надо выполнить goto по адресу который задан из вызова, а не выполнить goto по возвращаемому значению.
+goto
+out
+28
+777
+555
+myFunction
+goto
+=
+33
+out
+print
+goto
+$stackPopDrop
+
+
+$stackSwapLast2 - Поменять местами значения два последний элемента стека.
+=$inverse можно заменить тогда?
+
+
+myFunction
+5
+=
+24
+goto
+x
+$stackSwapLast2
+=
+y
+$stackSwapLast2
+=
+15
+x
+print
+goto
+19
+y
+print
+goto
+x
+y
++
+$stackSwapLast2
+goto
+out
+30
+777
+555
+myFunction
+goto
+=
+35
+out
+print
+goto
+
+
+Что-то сложно... Давайте все функции будут что-то возвращать?
+
+
+myFunction
+5
+=
+26
+goto
+x
+$stackSwapLast2
+=
+y
+$stackSwapLast2
+=
+15
+x
+print
+goto
+$stackPopDrop
+20
+y
+print
+goto
+$stackPopDrop
+x
+y
++
+$stackSwapLast2
+goto
+out
+32
+777
+555
+myFunction
+goto
+=
+37
+out
+print
+goto
+$stackPopDrop
 
