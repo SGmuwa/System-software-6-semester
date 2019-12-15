@@ -267,6 +267,16 @@ goto
 Что-то сложно... Давайте все функции будут что-то возвращать?
 
 
+
+myFunction = (x, y) => {
+    print(x)
+    print(y)
+    return x + y
+}
+out = myFunction(555, 777)
+print(out)
+
+
 myFunction
 5
 =

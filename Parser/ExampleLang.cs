@@ -23,6 +23,11 @@ namespace Parser
             for(int i = 0; i < helper; i++)
                 insert(i);
         }
+        private static void MoreInserterInvert(List<string> commands, ActionInsert insert, int helper)
+        {
+            for(int i = helper - 1; i >= 0; i--)
+                insert(i);
+        }
         private static void WordAndValue(List<string> commands, ActionInsert insert, int helper)
         {
             insert(1);
@@ -57,12 +62,39 @@ namespace Parser
                        )
                    )
                ),
-            function_expr = new Nonterminal(nameof(function_expr), AndInserter(), L_B, args, R_B),
+            VARAndComma = new Nonterminal(nameof(VARAndComma), AndInserter(0), RuleOperator.AND, VAR, COMMA),
+            argInit_element = new Nonterminal(nameof(argInit_element), (commands, insert, helper) => {
+                insert(); // Вставка переменной.
+                commands.Add("$stackSwapLast2");
+                commands.Add("=");
+            }, RuleOperator.OR, VAR, VARAndComma),
+            argsInit = new Nonterminal(nameof(argsInit), MoreInserter, RuleOperator.ZERO_AND_MORE, argInit_element),
+            initFunction_expr = new Nonterminal(nameof(initFunction_expr), AndInserter(1, 4), AND, L_B, argsInit, R_B, IMPLICATION, body),
+            valueAndComma = new Nonterminal(nameof(valueAndComma), AndInserter(0), RuleOperator.AND, value, COMMA),
+            argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, RuleOperator.OR, value, valueAndComma),
+            argsCall = new Nonterminal(nameof(argsCall), MoreInserterInvert, RuleOperator.ZERO_AND_MORE, argCall_element),
+            call_function_expr = new Nonterminal(nameof(call_function_expr), (commands, insert, helper) => {
+                int idToReplace = commands.Count;
+                commands.Add("?");
+                insert(2);
+                insert(0);
+                commands.Add("goto");
+                commands[idToReplace] = commands.Count.ToString();
+            }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
+            call_function_without_output_expr = new Nonterminal(nameof(call_function_without_output_expr), (commands, insert, helper) => {
+                int idToReplace = commands.Count;
+                commands.Add("?");
+                insert(2);
+                insert(0);
+                commands.Add("goto");
+                commands[idToReplace] = commands.Count.ToString();
+                commands.Add("$stackPopDrop");
+            }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
             b_val_expr = new Nonterminal(nameof(b_val_expr), OrInserter, OR,
-                function_expr,
+                initFunction_expr,
                 new Nonterminal("L_B stmt R_B", AndInserter(1), AND, L_B, stmt, R_B),
                 stmt),
-            body = new Nonterminal(nameof(body), AndInserter(1), AND, "L_QB", lang, "R_QB"),
+            body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
             condition = new Nonterminal(nameof(condition), AndInserter(1), AND, L_B, stmt, R_B),
             for_condition = new Nonterminal(nameof(condition), AndInserter(0), AND, stmt),
             while_expr = new Nonterminal(nameof(while_expr),
@@ -135,7 +167,7 @@ namespace Parser
                    commands[indexAddrFalse] = commands.Count.ToString();
                }, AND, FOR_KW, L_B, /*2*/assign_expr, COMMA, /*4*/for_condition, COMMA, /*6*/assign_expr, R_B, /*8*/ body),
             cycle_expr = new Nonterminal(nameof(cycle_expr), OrInserter, OR, while_expr, do_while_expr, for_expr),
-            expr = new Nonterminal(nameof(expr), OrInserter, OR, PRINT_KW, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr);
+            expr = new Nonterminal(nameof(expr), OrInserter, OR, PRINT_KW, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr);
 
         /// <summary>
         /// Свод правил языка.
@@ -145,7 +177,7 @@ namespace Parser
         static ExampleLang()
         {
             lang.Add(expr);
-            value.AddRange(new object[] { command_hash_expr, command_list_expr, VAR, DIGIT, b_val_expr });
+            value.AddRange(new object[] { command_hash_expr, command_list_expr, VAR, DIGIT, call_function_expr, b_val_expr });
         }
     }
 }
