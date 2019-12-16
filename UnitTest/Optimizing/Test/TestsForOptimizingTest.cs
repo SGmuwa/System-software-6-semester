@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using Lexer;
+using static Parser.ExampleLang.CommandsList;
 
 namespace Optimizing.Test
 {
@@ -29,16 +30,16 @@ namespace Optimizing.Test
                 Parser.ExampleLang.Lang.Check(tokens)
             );
             Console.WriteLine(string.Join(", ", output));
-            CollectionAssert.AreEqual(new string[]{"a", "1", "1", "+", "=", "9", "a", "print", "goto", "$stackPopDrop"}, output);
+            CollectionAssert.AreEqual(new string[]{"a", "1", "1", Plus, Assign, "9", "a", "print", Goto, StackPopDrop}, output);
         }
         
 
         [DataTestMethod]
-        [DataRow("OptimizeFirst", "a 2 = 7 a print goto $stackPopDrop")]
-        [DataRow("VarInVar", "a 3 = b 6 = 10 a print goto $stackPopDrop 15 b print goto $stackPopDrop")]
-        //                 a 3 = a 7 = b 14 = 13 a print goto $stackPopDrop 18 b print goto $stackPopDrop
-        [DataRow("VarVarInVar", "a 7 = b 14 = 10 a print goto $stackPopDrop 15 b print goto $stackPopDrop")]
-        [DataRow("If", "1 6 !f a 1 = b 2 = 13 a print goto $stackPopDrop 18 b print goto $stackPopDrop")]
+        [DataRow("OptimizeFirst", "a 2 = 7 a print goto! $stackPopDrop"]
+        [DataRow("VarInVar", "a 3 = b 6 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
+        //                 a 3 = a 7 = b 14 = 13 a print goto! $stackPopDrop 18 b print goto! $stackPopDrop
+        [DataRow("VarVarInVar", "a 7 = b 14 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
+        [DataRow("If", "1 6 !f a 1 = b 2 = 13 a print goto! $stackPopDrop 18 b print goto! $stackPopDrop")]
         public void OptimizingSimple(string resourceName, string expect)
         {
             var output = CompileAndOptimizing(Resources.GetString(resourceName));

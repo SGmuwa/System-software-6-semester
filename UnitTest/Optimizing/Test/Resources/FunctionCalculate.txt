@@ -1,0 +1,12 @@
+fun2 = (b) => {
+    b + 1
+}
+
+fun1 = (a) => {
+    while(a < 100) {
+        a = fun2(a)
+    }
+    a
+}
+
+print(fun1(-5))

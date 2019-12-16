@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using static Lexer.ExampleLang;
+using static Parser.ExampleLang;
+using static Parser.ExampleLang.CommandsList;
 
 namespace StackMachine
 {
@@ -23,30 +25,28 @@ namespace StackMachine
 
             protected readonly Dictionary<string, Action<MyStackLang>> commands = new Dictionary<string, Action<MyStackLang>>()
             {
-                ["print"] = _ =>
+                [Goto] = _ =>
                 {
-                    StringBuilder sb = new StringBuilder();
-                    foreach (var pair in _.Variables)
+                    string address = _.Stack.Peek();
+                    if(address == "print")
                     {
-                        sb.Append(pair.Key);
-                        sb.Append(" = ");
-                        sb.Append(pair.Value);
-                        sb.AppendLine();
+                        _.Stack.Pop();
+                        int output = _.Print(_.PopStk());
+                        int addressToGoto = (int)_.PopStk() - 1;
+                        _.Stack.Push(output.ToString());
+                        _.InstructionPointer = addressToGoto;
                     }
-                    Console.Write(sb.ToString());
+                    else
+                        _.InstructionPointer = (int)_.PopStk() - 1;
                 },
-                ["goto!"] = _ =>
-                {
-                    _.InstructionPointer = (int)_.PopStk() - 1;
-                },
-                ["!f"] = _ =>
+                [IfNotGoto] = _ =>
                 {
                     int addr = (int)_.PopStk();
                     int logical = (int)_.PopStk();
                     if (logical == 0) // Если ложь, то пропускаем body.
                         _.InstructionPointer = addr - 1;
                 },
-                ["="] = _ =>
+                [Assign] = _ =>
                 {
                     double stmt = _.PopStk();
                     string var = _.Stack.Pop();
@@ -54,13 +54,13 @@ namespace StackMachine
                         throw new KeyNotFoundException();
                     _.Variables[var] = stmt;
                 },
-                ["+"] = _ =>
+                [Plus] = _ =>
                 {
                     _.Stack.Push(
                         (_.PopStk() + _.PopStk())
                         .ToString());
                 },
-                ["-"] = _ =>
+                [Minus] = _ =>
                 {
                     double b = _.PopStk();
                     double a = _.PopStk();
@@ -68,13 +68,13 @@ namespace StackMachine
                         (a - b)
                         .ToString());
                 },
-                ["*"] = _ =>
+                [Multiply] = _ =>
                 {
                     _.Stack.Push(
                         (_.PopStk() * _.PopStk())
                         .ToString());
                 },
-                ["/"] = _ =>
+                [Divide] = _ =>
                 {
                     double b = _.PopStk();
                     double a = _.PopStk();
@@ -82,7 +82,7 @@ namespace StackMachine
                         (a / b)
                         .ToString());
                 },
-                [">"] = _ =>
+                [More] = _ =>
                 {
                     double b = _.PopStk();
                     double a = _.PopStk();
@@ -90,7 +90,7 @@ namespace StackMachine
                         (a > b)
                         ? "1" : "0");
                 },
-                ["<"] = _ =>
+                [Less] = _ =>
                 {
                     double b = _.PopStk();
                     double a = _.PopStk();
@@ -98,66 +98,66 @@ namespace StackMachine
                         (a < b)
                         ? "1" : "0");
                 },
-                ["=="] = _ =>
+                [Equal] = _ =>
                 {
                     _.Stack.Push(
                         (_.PopStk() == _.PopStk())
                         ? "1" : "0");
                 },
-                ["!="] = _ =>
+                [NotEqual] = _ =>
                 {
                     _.Stack.Push(
                         (_.PopStk() != _.PopStk())
                         ? "1" : "0");
                 },
-                [HASHSET_ADD.Name] = _ =>
+                [CommandsList.HASHSET_ADD] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.set.Add(buffer) ? "1" : "0");
                 },
-                [HASHSET_CONTAINS.Name] = _ =>
+                [CommandsList.HASHSET_CONTAINS] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.set.Contains(buffer) ? "1" : "0");
                 },
-                [HASHSET_COUNT.Name] = _ =>
+                [CommandsList.HASHSET_COUNT] = _ =>
                 {
                     _.Stack.Push(_.set.Count.ToString());
                 },
-                [HASHSET_REMOVE.Name] = _ =>
+                [CommandsList.HASHSET_REMOVE] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.set.Remove(buffer) ? "1" : "0");
                 },
-                ["?"] = _ =>
+                [NotImplement] = _ =>
                 {
                     throw new NotImplementedException();
                 },
-                [LIST_ADD.Name] = _ =>
+                [CommandsList.LIST_ADD] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.list.Add(buffer);
                     _.Stack.Push("1");
                 },
-                [LIST_CONTAINS.Name] = _ =>
+                [CommandsList.LIST_CONTAINS] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.list.Contains(buffer) ? "1" : "0");
                 },
-                [LIST_COUNT.Name] = _ =>
+                [CommandsList.LIST_COUNT] = _ =>
                 {
                     _.Stack.Push(_.list.Count.ToString());
                 },
-                [LIST_REMOVE.Name] = _ =>
+                [CommandsList.LIST_REMOVE] = _ =>
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.list.Remove(buffer) ? "1" : "0");
                 },
-                ["$stackPopDrop"] = _ =>
+                [StackPopDrop] = _ =>
                 {
                     _.Stack.Pop();
                 },
-                ["$stackSwapLast2"] = _ => 
+                [StackSwapLast2] = _ => 
                 {
                     string a = _.Stack.Pop();
                     string b = _.Stack.Pop();
@@ -175,11 +175,15 @@ namespace StackMachine
             {
                 commands.GetValueOrDefault(command, _ => 
                 { // Объявлена новая переменная.
-                    if (!_.Variables.ContainsKey(command) && !IsNumber(command))
-                    {
-                    }
                     _.Stack.Push(command);
                 }).Invoke(this);
+            }
+
+            protected virtual int Print(double value)
+            {
+                string toWrite = value.ToString();
+                Console.WriteLine(toWrite);
+                return toWrite.Length;
             }
 
             /// <summary>
