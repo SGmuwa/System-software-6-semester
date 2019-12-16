@@ -100,7 +100,7 @@ namespace Parser
         public Nonterminal(RuleOperator rule, params object[] terminalsOrNonterminals)
         {
             this.rule = rule;
-            AddRange(terminalsOrNonterminals ?? throw new ArgumentNullException("Невероятная ошибка понимания синтаксиса C# достигнута."));
+            AddRange(terminalsOrNonterminals ?? throw new ArgumentNullException(nameof(terminalsOrNonterminals)));
         }
 
         /// <summary>
@@ -360,7 +360,7 @@ namespace Parser
         {
             if (!IsCanAdd(value))
                 throw new ArgumentException(
-                    "Ожидался жетон или оператор. Фактически: " + value.ToString());
+                    $"Ожидался жетон или оператор. Фактически: {value}");
             return value is string @string ? new Terminal(@string)
                 : value;
         }

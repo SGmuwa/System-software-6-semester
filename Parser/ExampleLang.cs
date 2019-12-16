@@ -68,11 +68,10 @@ namespace Parser
                 commands.Add("$stackSwapLast2");
                 commands.Add("=");
             }, RuleOperator.OR, VAR, VARAndComma),
-            argsInit = new Nonterminal(nameof(argsInit), MoreInserter, RuleOperator.ZERO_AND_MORE, argInit_element),
-            initFunction_expr = new Nonterminal(nameof(initFunction_expr), AndInserter(1, 4), AND, L_B, argsInit, R_B, IMPLICATION, body),
-            valueAndComma = new Nonterminal(nameof(valueAndComma), AndInserter(0), RuleOperator.AND, value, COMMA),
-            argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, RuleOperator.OR, value, valueAndComma),
-            argsCall = new Nonterminal(nameof(argsCall), MoreInserterInvert, RuleOperator.ZERO_AND_MORE, argCall_element),
+            argsInit = new Nonterminal(nameof(argsInit), MoreInserter, ZERO_AND_MORE, argInit_element),
+            valueAndComma = new Nonterminal(nameof(valueAndComma), AndInserter(0), AND, value, COMMA),
+            argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, OR, value, valueAndComma),
+            argsCall = new Nonterminal(nameof(argsCall), MoreInserterInvert, ZERO_AND_MORE, argCall_element),
             call_function_expr = new Nonterminal(nameof(call_function_expr), (commands, insert, helper) => {
                 int idToReplace = commands.Count;
                 commands.Add("?");
@@ -90,11 +89,12 @@ namespace Parser
                 commands[idToReplace] = commands.Count.ToString();
                 commands.Add("$stackPopDrop");
             }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
+            body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
+            initFunction_expr = new Nonterminal(nameof(initFunction_expr), AndInserter(1, 4), AND, L_B, argsInit, R_B, IMPLICATION, body),
             b_val_expr = new Nonterminal(nameof(b_val_expr), OrInserter, OR,
                 initFunction_expr,
                 new Nonterminal("L_B stmt R_B", AndInserter(1), AND, L_B, stmt, R_B),
                 stmt),
-            body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
             condition = new Nonterminal(nameof(condition), AndInserter(1), AND, L_B, stmt, R_B),
             for_condition = new Nonterminal(nameof(condition), AndInserter(0), AND, stmt),
             while_expr = new Nonterminal(nameof(while_expr),
@@ -167,7 +167,7 @@ namespace Parser
                    commands[indexAddrFalse] = commands.Count.ToString();
                }, AND, FOR_KW, L_B, /*2*/assign_expr, COMMA, /*4*/for_condition, COMMA, /*6*/assign_expr, R_B, /*8*/ body),
             cycle_expr = new Nonterminal(nameof(cycle_expr), OrInserter, OR, while_expr, do_while_expr, for_expr),
-            expr = new Nonterminal(nameof(expr), OrInserter, OR, PRINT_KW, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr);
+            expr = new Nonterminal(nameof(expr), OrInserter, OR, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr);
 
         /// <summary>
         /// Свод правил языка.

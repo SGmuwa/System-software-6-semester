@@ -11,7 +11,6 @@ namespace Lexer
                 OP               = new Terminal(nameof(OP),               "^\\+|-|\\*|/|>|<|>=|<=|==$"),
                 WHILE_KW         = new Terminal(nameof(WHILE_KW),         "^while$"                 , 0),
                 DO_KW            = new Terminal(nameof(DO_KW),            "^do$"                    , 0),
-                PRINT_KW         = new Terminal(nameof(PRINT_KW),         "^print$"                 , 0),
                 FOR_KW           = new Terminal(nameof(FOR_KW),           "^for$"                   , 0),
                 IF_KW            = new Terminal(nameof(IF_KW),            "^if$"                    , 0),
                 ELSE_KW          = new Terminal(nameof(ELSE_KW),          "^else$"                  , 0),
@@ -46,7 +45,7 @@ namespace Lexer
         
         public static readonly LexerLang Lang = new LexerLang(new List<Terminal>()
             {
-                ASSIGN_OP, VAR, DIGIT, OP, WHILE_KW, DO_KW, PRINT_KW,
+                ASSIGN_OP, VAR, DIGIT, OP, WHILE_KW, DO_KW,
                 FOR_KW, IF_KW, ELSE_KW, L_QB, R_QB, L_B, R_B, COMMA, COM,
                 HASHSET_ADD, HASHSET_CONTAINS, HASHSET_REMOVE, HASHSET_COUNT, LIST_ADD, LIST_CONTAINS,
                 LIST_REMOVE, LIST_COUNT, IMPLICATION, CH_LISTORSETMAYBE, CH_COMMENT, CH_SPACE, CH_LEFTLINE, CH_NEWLINE, CH_TAB
