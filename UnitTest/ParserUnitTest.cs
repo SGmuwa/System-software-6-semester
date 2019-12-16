@@ -59,11 +59,11 @@ namespace UnitTest
 
         [TestMethod]
         public void Parser_var_op_while_print_var()
-            => CheckTest(Resources.Parser_var_op_while_print_var, true, 18);
+            => CheckTest(Resources.Parser_var_op_while_print_var, true, 21);
 
         [TestMethod]
         public void Parser_do_while()
-            => CheckTest(Resources.Parser_do_while, true, 10);
+            => CheckTest(Resources.Parser_do_while, true, 13);
 
         [TestMethod]
         public void Parser_function()
@@ -71,13 +71,12 @@ namespace UnitTest
 
         [TestMethod]
         public void Parser_for()
-            // Может быть 19 при реализации for как в языке Си.
-            => CheckTest(Resources.Parser_for, true, 21);
+            => CheckTest(Resources.Parser_for, true, 24);
 
         [TestMethod]
         public void Parser_finalLang()
         {
-            ReportParser report = CheckTest(Resources.LangExample, true, 154);
+            ReportParser report = CheckTest(Resources.LangExample, true, 173);
             var all = string.Join(" ", from a in report.Compile select a.Current.ToString());
             Console.WriteLine(all);
             Assert.AreEqual(Resources.LangExampleJson,

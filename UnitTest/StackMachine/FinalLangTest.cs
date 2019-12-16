@@ -15,7 +15,7 @@ namespace StackMachine.Test
         [TestMethod]
         public void LexerTest()
         {
-            TestOnResourceCount(Resources.LangExample, 154);
+            TestOnResourceCount(Resources.LangExample, 173);
         }
 
         [TestMethod]

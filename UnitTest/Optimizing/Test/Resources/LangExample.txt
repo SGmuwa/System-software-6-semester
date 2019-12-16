@@ -51,5 +51,9 @@ else
 {
 	test = 0
 }
-print
+print(test)
+print(test1)
+print(test2)
+print(test3)
+print(test4)
 // На выходе переменная test должна быть равна 1.

@@ -152,6 +152,17 @@ namespace StackMachine
                 {
                     double buffer = _.PopStk();
                     _.Stack.Push(_.list.Remove(buffer) ? "1" : "0");
+                },
+                ["$stackPopDrop"] = _ =>
+                {
+                    _.Stack.Pop();
+                },
+                ["$stackSwapLast2"] = _ => 
+                {
+                    string a = _.Stack.Pop();
+                    string b = _.Stack.Pop();
+                    _.Stack.Push(a);
+                    _.Stack.Push(b);
                 }
             };
 

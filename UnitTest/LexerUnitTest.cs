@@ -65,7 +65,7 @@ namespace UnitTest
         {
             List<Token> tokens = TestOnResourceCount(Resources.print_kw, 1);
 
-            Assert.AreEqual("PRINT_KW", tokens[0].Type.Name);
+            Assert.AreEqual(ExampleLang.VAR, tokens[0].Type);
 
         }
         [TestMethod]

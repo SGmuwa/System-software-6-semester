@@ -1,7 +1,7 @@
 basd = 0
 while(basd < 10)
 {
-	print
+	print(basd)
 	basd = 10
 }
 basd = 0
