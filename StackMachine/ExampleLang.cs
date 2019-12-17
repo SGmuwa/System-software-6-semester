@@ -2,8 +2,6 @@
 using MyTypes.LinkedList;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using static Lexer.ExampleLang;
 using static Parser.ExampleLang;
 using static Parser.ExampleLang.CommandsList;
 
@@ -11,19 +9,17 @@ namespace StackMachine
 {
     public static class ExampleLang
     {
-        public static readonly MyStackLang StackMachine = new MyStackLang();
-
-        public class MyStackLang : AbstractStackExecuteLang
+        public class MyMachineLang : AbstractStackExecuteLang
         {
             /// <summary>
             /// Создаёт новый экземпляр стековой машины.
             /// </summary>
             /// <param name="startVariables">Реализация таблицы переменных.</param>
-            public MyStackLang(IDictionary<string, double> startVariables = null)
+            public MyMachineLang(IDictionary<string, double> startVariables = null)
                 : base(startVariables)
             { }
 
-            protected readonly Dictionary<string, Action<MyStackLang>> commands = new Dictionary<string, Action<MyStackLang>>()
+            protected readonly Dictionary<string, Action<MyMachineLang>> commands = new Dictionary<string, Action<MyMachineLang>>()
             {
                 [Goto] = _ =>
                 {

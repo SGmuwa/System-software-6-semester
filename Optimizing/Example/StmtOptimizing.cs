@@ -73,7 +73,7 @@ namespace Optimizing.Example
             return localStackMachine.GetLastValueStack();
         }
 
-        class OptimizingStackMachine : StackMachine.ExampleLang.MyStackLang
+        class OptimizingStackMachine : StackMachine.ExampleLang.MyMachineLang
         {
             public OptimizingStackMachine(IDictionary<string, double> startVariables = null) : base(startVariables)
             {

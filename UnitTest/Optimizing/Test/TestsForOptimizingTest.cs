@@ -35,9 +35,8 @@ namespace Optimizing.Test
         
 
         [DataTestMethod]
-        [DataRow("OptimizeFirst", "a 2 = 7 a print goto! $stackPopDrop"]
+        [DataRow("OptimizeFirst", "a 2 = 7 a print goto! $stackPopDrop")]
         [DataRow("VarInVar", "a 3 = b 6 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
-        //                 a 3 = a 7 = b 14 = 13 a print goto! $stackPopDrop 18 b print goto! $stackPopDrop
         [DataRow("VarVarInVar", "a 7 = b 14 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
         [DataRow("If", "1 6 !f a 1 = b 2 = 13 a print goto! $stackPopDrop 18 b print goto! $stackPopDrop")]
         public void OptimizingSimple(string resourceName, string expect)
@@ -70,7 +69,25 @@ namespace Optimizing.Test
         [TestMethod]
         public void FinalLangTest()
         {
-            StreamReader input = StringToStream(Resources.LangExample);
+            StackMachine.ExampleLang.MyMachineLang stackMachine = ExecuteResource(Resources.LangExample);
+            Assert.AreEqual(0, stackMachine.list.Count);
+            Assert.AreEqual(1, stackMachine.Variables["test1"]);
+            Assert.AreEqual(1, stackMachine.Variables["test2"]);
+            Assert.AreEqual(1, stackMachine.Variables["test3"]);
+            Assert.AreEqual(1, stackMachine.Variables["test4"]);
+            Assert.AreEqual(1, stackMachine.Variables["test"]);
+        } 
+
+        [TestMethod]
+        public void TestFunctionCalculate()
+        {
+            StackMachinePrint stackMachine = ExecuteResource(Resources.FunctionCalculate);
+            CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
+        }
+
+        private static StackMachinePrint ExecuteResource(string resource)
+        {
+            StreamReader input = StringToStream(resource);
             List<Token> tokens = Lexer.ExampleLang.Lang.SearchTokens(input);
             tokens.RemoveAll((Token t) => t.Type.Name.Contains("CH_"));
             input.Close();
@@ -81,16 +98,12 @@ namespace Optimizing.Test
                 )
             );
             Console.WriteLine(string.Join("\n", Polish));
-            StackMachine.ExampleLang.StackMachine.Execute(Polish);
-            Assert.AreEqual(0, StackMachine.ExampleLang.StackMachine.list.Count);
-            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test1"]);
-            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test2"]);
-            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test3"]);
-            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test4"]);
-            Assert.AreEqual(1, StackMachine.ExampleLang.StackMachine.Variables["test"]);
-        } 
+            StackMachinePrint stackMachine = new StackMachinePrint();
+            stackMachine.Execute(Polish);
+            return stackMachine;
+        }
 
-        public static StreamReader StringToStream(string resource)
+        private static StreamReader StringToStream(string resource)
         {
             return new StreamReader(
                new MemoryStream(

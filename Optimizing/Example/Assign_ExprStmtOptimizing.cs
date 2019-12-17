@@ -63,7 +63,7 @@ namespace Optimizing.Example
             {
                 toSend[varName] = double.NaN;
             }
-            StackMachine.ExampleLang.MyStackLang localStackMachine = new StackMachine.ExampleLang.MyStackLang(toSend);
+            StackMachine.ExampleLang.MyMachineLang localStackMachine = new StackMachine.ExampleLang.MyMachineLang(toSend);
             try
             {
                 localStackMachine.Execute(commands);

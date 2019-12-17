@@ -64,7 +64,7 @@ namespace Optimizing.Example
         /// <summary>
         /// Класс с реализацией стековой машины, которая создана для оптимизации кода.
         /// </summary>
-        class OptimizingStackMachine : StackMachine.ExampleLang.MyStackLang
+        class OptimizingStackMachine : StackMachine.ExampleLang.MyMachineLang
         {
             readonly DictionaryHooker myDic;
             readonly HashSet<ulong> ToRemove = new HashSet<ulong>();
