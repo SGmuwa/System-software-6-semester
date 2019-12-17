@@ -167,7 +167,7 @@ namespace Parser
                    commands[indexAddrFalse] = commands.Count.ToString();
                }, AND, FOR_KW, L_B, /*2*/assign_expr, COMMA, /*4*/for_condition, COMMA, /*6*/assign_expr, R_B, /*8*/ body),
             cycle_expr = new Nonterminal(nameof(cycle_expr), OrInserter, OR, while_expr, do_while_expr, for_expr),
-            expr = new Nonterminal(nameof(expr), OrInserter, OR, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr);
+            expr = new Nonterminal(nameof(expr), OrInserter, OR, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr, stmt);
 
         /// <summary>
         /// Свод правил языка.
@@ -177,7 +177,7 @@ namespace Parser
         static ExampleLang()
         {
             lang.Add(expr);
-            value.AddRange(new object[] { command_hash_expr, command_list_expr, VAR, DIGIT, call_function_expr, b_val_expr });
+            value.AddRange(new object[] { command_hash_expr, command_list_expr, call_function_expr, VAR, DIGIT, b_val_expr });
         }
 
         public static class CommandsList

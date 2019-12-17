@@ -45,27 +45,6 @@ namespace Optimizing.Test
             CollectionAssert.AreEqual(expect.Split(' '), output);
         }
 
-        private static List<string> CompileAndOptimizing(string resourceBody)
-        {
-            List<Token> tokens;
-            using(StreamReader stream = StringToStream(resourceBody))
-                tokens = Lexer.ExampleLang.Lang.SearchTokens(stream);
-            tokens.RemoveAll(t => t.Type.Name.StartsWith("CH_"));
-            Console.WriteLine($"tokens:\n{string.Join('\n', tokens)}");
-            var reportParser = Parser.ExampleLang.Lang.Check(tokens);
-            Console.WriteLine($"preLang:\n{reportParser}");
-            Console.WriteLine($"PreStackMachine:\n{string.Join(" ", Parser.ExampleLang.Lang.Compile(tokens, reportParser))}");
-            var reportParserOptimize = Example.AllOptimizing.Instance.Optimize(reportParser);
-            Console.WriteLine($"postLang:\n{reportParserOptimize}");
-            Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
-            var output = Parser.ExampleLang.Lang.Compile(
-                tokens,
-                reportParserOptimize
-            );
-            Console.WriteLine($"optimizing:\n{string.Join("; ", output)}");
-            return output;
-        }
-
         [TestMethod]
         public void FinalLangTest()
         {
@@ -85,21 +64,29 @@ namespace Optimizing.Test
             CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
         }
 
+        private static List<string> CompileAndOptimizing(string resourceBody)
+        {
+            List<Token> tokens;
+            using(StreamReader stream = StringToStream(resourceBody))
+                tokens = Lexer.ExampleLang.Lang.SearchTokens(stream);
+            tokens.RemoveAll(t => t.Type.Name.StartsWith("CH_"));
+            Console.WriteLine($":: tokens:\n{string.Join('\n', tokens)}");
+            var reportParser = Parser.ExampleLang.Lang.Check(tokens);
+            Console.WriteLine($":: preLang:\n{reportParser}");
+            Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
+            Console.WriteLine($":: PreStackMachine:\n{string.Join(" ", Parser.ExampleLang.Lang.Compile(tokens, reportParser))}");
+            reportParser = Example.AllOptimizing.Instance.Optimize(reportParser);
+            Console.WriteLine($":: postLang:\n{reportParser}");
+            Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
+            var output = Parser.ExampleLang.Lang.Compile(tokens, reportParser);
+            Console.WriteLine($":: optimizing:\n{string.Join("; ", output)}");
+            return output;
+        }
+
         private static StackMachinePrint ExecuteResource(string resource)
         {
-            StreamReader input = StringToStream(resource);
-            List<Token> tokens = Lexer.ExampleLang.Lang.SearchTokens(input);
-            tokens.RemoveAll((Token t) => t.Type.Name.Contains("CH_"));
-            input.Close();
-            List<string> Polish = Parser.ExampleLang.Lang.Compile(
-                tokens,
-                Example.AllOptimizing.Instance.Optimize(
-                    Parser.ExampleLang.Lang.Check(tokens)
-                )
-            );
-            Console.WriteLine(string.Join("\n", Polish));
             StackMachinePrint stackMachine = new StackMachinePrint();
-            stackMachine.Execute(Polish);
+            stackMachine.Execute(CompileAndOptimizing(resource));
             return stackMachine;
         }
 

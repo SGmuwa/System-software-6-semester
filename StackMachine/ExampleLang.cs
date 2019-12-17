@@ -133,7 +133,6 @@ namespace StackMachine
                 {
                     double buffer = _.PopStk();
                     _.list.Add(buffer);
-                    _.Stack.Push("1");
                 },
                 [CommandsList.LIST_CONTAINS] = _ =>
                 {

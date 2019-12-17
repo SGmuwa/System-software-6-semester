@@ -122,7 +122,7 @@ namespace Parser
         /// <param name="end">Последний доступный индекс в листе tokens.</param>
         /// <param name="deep">Ограничение по поиску в глубину.</param>
         /// <returns>Отчёт анализа кода.</returns>
-        public ReportParser CheckRule(IList<Token> tokens, ref int begin, ref int end, int deep = 500)
+        public ReportParser CheckRule(IList<Token> tokens, ref int begin, ref int end, int deep = 50)
         {
             lock(sync)
             {
