@@ -5,6 +5,7 @@ using System.Text;
 using System.Collections.Generic;
 using Lexer;
 using static Parser.ExampleLang.CommandsList;
+using Parser;
 
 namespace Optimizing.Test
 {
@@ -58,13 +59,28 @@ namespace Optimizing.Test
         } 
 
         [TestMethod]
-        public void TestFunctionCalculate()
+        public void TestFunctionCalculateNotOptimize()
         {
-            StackMachinePrint stackMachine = ExecuteResource(Resources.FunctionCalculate);
+            StackMachinePrint stackMachine = ExecuteResource(Resources.FunctionCalculate, false);
             CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
         }
 
-        private static List<string> CompileAndOptimizing(string resourceBody)
+        [TestMethod]
+        public void TestFunctionCalculateOptimize()
+        {
+            StackMachinePrint stackMachine = ExecuteResource(Resources.FunctionCalculate, true);
+            CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
+        }
+
+
+        [TestMethod]
+        public void TestOp()
+        {
+            StackMachinePrint stackMachine = ExecuteResource(Resources.Op);
+            CollectionAssert.AreEqual(new double[] {4}, stackMachine.PrintHistory);
+        }
+
+        private static (ReportParser, List<Token>, List<string>) Compile(string resourceBody)
         {
             List<Token> tokens;
             using(StreamReader stream = StringToStream(resourceBody))
@@ -74,7 +90,14 @@ namespace Optimizing.Test
             var reportParser = Parser.ExampleLang.Lang.Check(tokens);
             Console.WriteLine($":: preLang:\n{reportParser}");
             Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
-            Console.WriteLine($":: PreStackMachine:\n{string.Join(" ", Parser.ExampleLang.Lang.Compile(tokens, reportParser))}");
+            List<string> commands = Parser.ExampleLang.Lang.Compile(tokens, reportParser);
+            Console.WriteLine($":: PreStackMachine:\n{string.Join(" ", commands)}");
+            return (reportParser, tokens, commands);
+        }
+
+        private static List<string> CompileAndOptimizing(string resourceBody)
+        {
+            (ReportParser reportParser, List<Token> tokens, _) = Compile(resourceBody);
             reportParser = Example.AllOptimizing.Instance.Optimize(reportParser);
             Console.WriteLine($":: postLang:\n{reportParser}");
             Assert.IsTrue(reportParser.IsSuccess, "Ошибка компиляции.");
@@ -83,10 +106,11 @@ namespace Optimizing.Test
             return output;
         }
 
-        private static StackMachinePrint ExecuteResource(string resource)
+        private static StackMachinePrint ExecuteResource(string resource, bool needOptimize = true)
         {
             StackMachinePrint stackMachine = new StackMachinePrint();
-            stackMachine.Execute(CompileAndOptimizing(resource));
+            List<string> compiled = needOptimize ? CompileAndOptimizing(resource) : Compile(resource).Item3;
+            stackMachine.Execute(compiled);
             return stackMachine;
         }
 

@@ -90,7 +90,17 @@ namespace Parser
                 commands.Add(CommandsList.StackPopDrop);
             }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
             body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
-            initFunction_expr = new Nonterminal(nameof(initFunction_expr), AndInserter(1, 4), AND, L_B, argsInit, R_B, IMPLICATION, body),
+            initFunction_expr = new Nonterminal(nameof(initFunction_expr), (commands, insert, helper) => {
+                int indexToSet = commands.Count;
+                commands.Add(CommandsList.NotImplement);
+                commands.Add(CommandsList.Goto);
+                insert(1);
+                insert(4);
+                commands.Add(CommandsList.StackSwapLast2);
+                commands.Add(CommandsList.Goto);
+                commands[indexToSet] = commands.Count.ToString();
+                commands.Add((indexToSet + 2).ToString());
+            }, AND, L_B, argsInit, R_B, IMPLICATION, body),
             b_val_expr = new Nonterminal(nameof(b_val_expr), OrInserter, OR,
                 initFunction_expr,
                 new Nonterminal($"{L_B.Name} {stmt.Name} {R_B.Name}", AndInserter(1), AND, L_B, stmt, R_B),
@@ -177,7 +187,7 @@ namespace Parser
         static ExampleLang()
         {
             lang.Add(expr);
-            value.AddRange(new object[] { command_hash_expr, command_list_expr, call_function_expr, VAR, DIGIT, b_val_expr });
+            value.AddRange(new object[] { command_hash_expr, command_list_expr, call_function_expr, VAR, DIGIT });
         }
 
         public static class CommandsList

@@ -70,7 +70,7 @@ namespace StackMachine.Test
         /// </summary>
         /// <param name="text">Текст программы.</param>
         /// <param name="count">Количество ожидаемых терминалов.</param>
-        public List<Token> TestOnResourceCount(string text, int count)
+        private List<Token> TestOnResourceCount(string text, int count)
         {
             StreamReader input = StringToStream(text);
             List<Token> tokens = Lexer.ExampleLang.Lang.SearchTokens(input);

@@ -7,7 +7,7 @@ namespace Lexer
         public readonly static Terminal
                 ASSIGN_OP        = new Terminal(nameof(ASSIGN_OP),        "^=$"                     ),
                 VAR              = new Terminal(nameof(VAR),              "^[a-zA-Z][a-zA-Z0-9]*$"  , uint.MaxValue - 1),
-                DIGIT            = new Terminal(nameof(DIGIT),            "^0|([1-9][0-9]*)$"       ),
+                DIGIT            = new Terminal(nameof(DIGIT),            "^0|(-?[1-9][0-9]*)$"       ),
                 OP               = new Terminal(nameof(OP),               "^\\+|-|\\*|/|>|<|>=|<=|==$"),
                 WHILE_KW         = new Terminal(nameof(WHILE_KW),         "^while$"                 , 0),
                 DO_KW            = new Terminal(nameof(DO_KW),            "^do$"                    , 0),

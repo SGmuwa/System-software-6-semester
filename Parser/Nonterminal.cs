@@ -150,7 +150,8 @@ namespace Parser
             if (tokens == null)
                 throw new ArgumentNullException("Список жетонов должен был инициализирован.");
             ReportParser output = new ReportParser();
-            output.Info.AddInfo("Зашёл в нетерминал: " + ToString());
+            ulong currentFreeId = FreeId;
+            output.Info.AddInfo($"Зашёл в нетерминал: {ToString()}, FreeId: RPC{currentFreeId}");
             if(--deep <= 0)
             {
                 output.Info.Add(new ReportParserInfoLine("Обнаружена бесконечная рекурсия. Выход..."));
@@ -175,7 +176,7 @@ namespace Parser
                 default:
                     throw new NotImplementedException($"Оператор {Enum.GetName(typeof(RuleOperator), rule)} не реализован.");
             }
-            output.Info.AddInfo("Состояние отчёта: " + output.IsSuccess + ", выхожу из нетерминала: " + ToString());
+            output.Info.AddInfo($"Состояние отчёта: {output.IsSuccess}, выхожу из нетерминала: {ToString()} RPC{currentFreeId}");
             return output;
         }
 
@@ -189,7 +190,7 @@ namespace Parser
                 compile.Helper++;
             }
             while (output.IsSuccess) ;
-            output.Info.Success("Нетерминалы ZERO_AND_MORE всегда успешны. Текущий: " + ToString());
+            output.Info.Success($"Нетерминалы ZERO_AND_MORE всегда успешны. Текущий: {ToString()}");
             return output;
         }
 
@@ -210,7 +211,7 @@ namespace Parser
                 compile.Helper++;
             }
             while (output.IsSuccess);
-            output.Info.Success("Нетерминалы ZERO_AND_MORE всегда успешны. Текущий: " + ToString());
+            output.Info.Success($"Нетерминалы ZERO_AND_MORE всегда успешны. Текущий: {ToString()}");
             return output;
         }
 

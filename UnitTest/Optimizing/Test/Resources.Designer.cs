@@ -88,5 +88,11 @@ namespace Optimizing.Test {
         internal static string If => GetString("If", Culture);
         internal static string LangExample => GetString("LangExample", Culture);
         internal static string FunctionCalculate => GetString("FunctionCalculate", Culture);
+        /// <summary>
+        /// a = 1 + 2 * 4 / 2 - 2
+        /// print(a)
+        /// </summary>
+        /// <returns></returns>
+        internal static string Op => GetString("Op", Culture);
     }
 }
