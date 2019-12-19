@@ -21,12 +21,15 @@ namespace Lexer
                 Console.WriteLine(e + "\n" + e.StackTrace);
                 return 5;
             }
-            stream.Close();
+            finally
+            {
+                stream.Close();
+            }
             foreach (Token token in tokens)
                 // Печатаем жетоны.
                 Console.WriteLine(token);
-            Console.Write("Press eny key...");
-            Console.ReadLine();
+            Console.Write("Press any key...");
+            Console.ReadKey();
             return 0;
         }
 

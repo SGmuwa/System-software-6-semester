@@ -47,13 +47,13 @@ namespace Optimizing.Example
 
             HashSet<ITreeNode<object>> RPCToRemove = new HashSet<ITreeNode<object>>(
                 from a in output
-                where a.Current is ReportParserCompile
+                where a.Current is ParserToken
                     && a.Count == 3
                     && a[1].Current is Token token
                     && TokensToRemove.Contains(token.Id)
                 select a);
             Console.WriteLine($"Remove need:\n{string.Join("\n", RPCToRemove)}");
-            ReportParserCompile none = new ReportParserCompile(new Nonterminal("none", (a, b, c) => {}, RuleOperator.NONE), RuleOperator.NONE);
+            ParserToken none = new ParserToken(new Nonterminal("none", (a, b, c) => {}, RuleOperator.NONE), RuleOperator.NONE);
             output.ReplaceWhere(
                 (a) => RPCToRemove.Contains(a),
                 () => new TreeNode<object>(none));
@@ -95,11 +95,16 @@ namespace Optimizing.Example
 
             protected override void ExecuteCommand(string command)
             {
-                if(command.Contains('='))
+                if(command.Contains(" ="))
                 {
                     assignOpIds[InstructionPointer] = ulong.Parse(command.Substring(0, command.IndexOf(' ')));
                     LastIPAssignOp = InstructionPointer;
                     base.ExecuteCommand("=");
+                    return;
+                }
+                if(command == "=")
+                {
+                    base.ExecuteCommand(command);
                     return;
                 }
                 if(!base.commands.ContainsKey(command))

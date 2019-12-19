@@ -109,7 +109,7 @@ namespace MyTypes.LinkedList
         /// <summary>
         /// Добавляет новый узел, содержащий указанное значение в начале <see cref="MyLinkedList{T}"/>.
         /// </summary>
-        /// <param name="value">Добавляемое значение в начале <see cref="MyLinkedList{T}"/>.</param>
+        /// <param name="value">Добавляемое значение в начало <see cref="MyLinkedList{T}"/>.</param>
         /// <returns>Новый <see cref="MyLinkedListNode{T}"/> содержащий value.</returns>
         public MyLinkedListNode<T> AddFirst(T value)
         {
@@ -149,7 +149,7 @@ namespace MyTypes.LinkedList
         }
 
         /// <summary>
-        /// Очистить лист.
+        /// Очистить список.
         /// </summary>
         public void Clear()
         {

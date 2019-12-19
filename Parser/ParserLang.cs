@@ -27,7 +27,7 @@ namespace Parser
         {
             int begin = 0, end = tokens.Count - 1;
             ReportParser output = mainNonterminal.CheckRule(tokens, ref begin, ref end);
-            if (output.IsSuccess && begin <= end)
+            if (!output.IsSuccess | begin < end)
                 output.Info.Add(new ReportParserInfoLine($"Входной текст не полностью подходит к грамматике.", null, tokens, tokens, begin));
             return output;
         }
@@ -40,8 +40,8 @@ namespace Parser
             if (!report.IsSuccess)
                 throw new ArgumentException("Свойство report.IsSuccess вернуло false. Возможно, входной файл написан с ошибками. Он не может быть скомпилирован.");
             ITreeNode<object> compileTree = report.Compile;
-            ReportParserCompile currentComp = (ReportParserCompile)compileTree.Current;
-            currentComp.Source.TransferToStackCode(commands, (i) => Inserter(i, compileTree, commands), currentComp.Helper);
+            ParserToken currentComp = (ParserToken)compileTree.Current;
+            currentComp.Source.TransferToStackCode(commands, (int i) => Inserter(i, compileTree, commands), currentComp.Helper);
             return commands;
         }
 
@@ -54,7 +54,7 @@ namespace Parser
         /// <returns></returns>
         private bool Inserter(int i, ITreeNode<object> compileTree, List<string> commands)
         {
-            ReportParserCompile comp = (ReportParserCompile)compileTree.Current;
+            ParserToken comp = (ParserToken)compileTree.Current;
             if (i >= 0)
             { // AND, MORE
                 if (comp.CurrentRule == OR)
@@ -65,9 +65,9 @@ namespace Parser
                 { // Это терминал.
                     commands.Add(token.Value);
                 }
-                else if (compileTree[i].Current is ReportParserCompile deep)
+                else if (compileTree[i].Current is ParserToken deep)
                 { // Это нетерминал.
-                    deep.Source.TransferToStackCode(commands, (j) => Inserter(j, compileTree[i], commands), deep.Helper);
+                    deep.Source.TransferToStackCode(commands, (int j) => Inserter(j, compileTree[i], commands), deep.Helper);
                 }
                 else
                     throw new ArgumentException($"Не получилось определить, терминал ли это, или нетерминал в списке {compileTree} с id {i}: {compileTree[i].GetType()}");
@@ -82,7 +82,7 @@ namespace Parser
                 { // Это терминал.
                     commands.Add(token.Value);
                 }
-                else if (compileTree[0].Current is ReportParserCompile deep)
+                else if (compileTree[0].Current is ParserToken deep)
                 { // Это нетерминал.
                     deep.Source.TransferToStackCode(commands, (j) => Inserter(j, compileTree[0], commands), deep.Helper);
                 }

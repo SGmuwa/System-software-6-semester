@@ -207,8 +207,7 @@ namespace UnitTest
                     break;
                 case "goto":
                     {
-                        InstructionPointer =
-                            (int)PopStk() - 1;
+                        InstructionPointer = (int)PopStk() - 1;
                     }
                     break;
                 case "if":

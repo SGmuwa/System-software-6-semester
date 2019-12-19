@@ -88,7 +88,7 @@ namespace Parser
                 commands.Add(CommandsList.Goto);
                 commands[idToReplace] = commands.Count.ToString();
                 commands.Add(CommandsList.StackPopDrop);
-            }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
+            }, AND, VAR, L_B, argsCall, R_B),
             body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
             initFunction_expr = new Nonterminal(nameof(initFunction_expr), (commands, insert, helper) => {
                 int indexToSet = commands.Count;
@@ -177,7 +177,14 @@ namespace Parser
                    commands[indexAddrFalse] = commands.Count.ToString();
                }, AND, FOR_KW, L_B, /*2*/assign_expr, COMMA, /*4*/for_condition, COMMA, /*6*/assign_expr, R_B, /*8*/ body),
             cycle_expr = new Nonterminal(nameof(cycle_expr), OrInserter, OR, while_expr, do_while_expr, for_expr),
-            expr = new Nonterminal(nameof(expr), OrInserter, OR, call_function_without_output_expr, assign_expr, if_expr_OR_ifelse_expr, cycle_expr, command_hash_expr, command_list_expr, stmt);
+            expr = new Nonterminal(nameof(expr), OrInserter, OR,
+                call_function_without_output_expr,
+                assign_expr,
+                if_expr_OR_ifelse_expr,
+                cycle_expr,
+                command_hash_expr,
+                command_list_expr,
+                stmt);
 
         /// <summary>
         /// Свод правил языка.

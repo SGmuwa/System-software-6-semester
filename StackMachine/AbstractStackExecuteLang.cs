@@ -33,8 +33,7 @@ namespace StackMachine
         /// <summary>
         /// Указатель на текущую выполняемую операцию.
         /// </summary>
-        public int InstructionPointer { get; protected set; }
-            = -1;
+        public int InstructionPointer { get; protected set; } = -1;
 
         public virtual void Execute(IEnumerable<string> code)
         {

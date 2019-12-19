@@ -72,6 +72,7 @@ namespace Parser
         /// Создание экземпляра нетерминала.
         /// </summary>
         /// <param name="Name">Устанавливает имя терминала.</param>
+        /// <param name="TransferToStackCode">Функция преобразования жетонов в стек-код.</param>
         /// <param name="rule">Указывает, какая реакция должна быть на истинность всех терминалов и нетерминалов.</param>
         /// <param name="terminalsOrNonterminals">Список терминалов и нетерминалов.</param>
         public Nonterminal(string Name, TransferToStackCode TransferToStackCode, RuleOperator rule, params object[] terminalsOrNonterminals)
@@ -182,21 +183,21 @@ namespace Parser
 
         private ReportParser RuleZERO_AND_MORE(int deep, IList<Token> tokens, ref int begin, ref int end)
         {
-            ReportParserCompile compile = new ReportParserCompile(this, ZERO_AND_MORE, -1, FreeId++);
+            ParserToken compile = new ParserToken(this, ZERO_AND_MORE, -1, FreeId++);
             ReportParser output = new ReportParser(compile);
             do
             {
                 RuleMORE(deep, tokens, output, ref begin, ref end);
                 compile.Helper++;
             }
-            while (output.IsSuccess) ;
+            while (output.IsSuccess);
             output.Info.Success($"Нетерминалы ZERO_AND_MORE всегда успешны. Текущий: {ToString()}");
             return output;
         }
 
         private ReportParser RuleONE_AND_MORE(int deep, IList<Token> tokens, ref int begin, ref int end)
         {
-            ReportParserCompile compile = new ReportParserCompile(this, ONE_AND_MORE, -1, FreeId++);
+            ParserToken compile = new ParserToken(this, ONE_AND_MORE, -1, FreeId++);
             ReportParser output = new ReportParser(compile);
             compile.Helper++;
             if (!RuleMORE(deep, tokens, output, ref begin, ref end))
@@ -258,7 +259,7 @@ namespace Parser
 
         private ReportParser RuleAND(int deep, IList<Token> tokens, ref int begin, ref int end)
         {
-            ITreeNode<object> compileTree = new TreeNode<object>(new ReportParserCompile(this, AND, Id: FreeId++));
+            ITreeNode<object> compileTree = new TreeNode<object>(new ParserToken(this, AND, Id: FreeId++));
             ReportParser output = new ReportParser(compileTree);
             int b = begin;
             int e = end;
@@ -306,7 +307,7 @@ namespace Parser
 
         private ReportParser RuleOR(int deep, IList<Token> tokens, ref int begin, ref int end)
         {
-            ReportParserCompile comp = new ReportParserCompile(this, OR, -1, FreeId++);
+            ParserToken comp = new ParserToken(this, OR, -1, FreeId++);
             ITreeNode<object> compileTree = new TreeNode<object>(comp);
             ReportParser output = new ReportParser(compileTree);
             foreach (object o in this)

@@ -10,7 +10,7 @@ namespace StackMachine
     {
         static int Main(string[] args)
         {
-            var tokensReport = GetParserReportFromUser(args);
+            (IList<Token>, ReportParser) tokensReport = GetParserReportFromUser(args);
             CompileAndExecute(tokensReport);
             return 0;
         }
@@ -62,7 +62,7 @@ namespace StackMachine
             Console.WriteLine("-----\nПольская запись:\n-----");
             Console.WriteLine(string.Join(", ", commands));
             Console.ForegroundColor = ConsoleColor.White;
-            new ExampleLang.MyMachineLang().Execute(commands);
+            new StackMachine.ExampleLang.MyMachineLang().Execute(commands);
             Console.Write("Press eny key...");
             Console.ReadLine();
         }

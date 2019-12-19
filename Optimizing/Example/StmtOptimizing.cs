@@ -34,7 +34,7 @@ namespace Optimizing.Example
             ITreeNode<object> outputCompile = compiledCode.Compile.CloneCompileTree();
 
             var stmts = from a in outputCompile
-                where a.Current is ReportParserCompile rpc && (rpc.Source == Parser.ExampleLang.stmt || rpc.Source == Parser.ExampleLang.assign_expr)
+                where a.Current is ParserToken rpc && (rpc.Source == Parser.ExampleLang.stmt || rpc.Source == Parser.ExampleLang.assign_expr)
                 select a;
 
             Dictionary<string, double> varsValues = new Dictionary<string, double>();
@@ -44,7 +44,7 @@ namespace Optimizing.Example
                 string stmtResult = TryCalculate(stmt, varsValues);
                 if(stmtResult != null)
                 {
-                    ReportParserCompile current = (ReportParserCompile)stmt.Current;
+                    ParserToken current = (ParserToken)stmt.Current;
                     if(current.Source == Parser.ExampleLang.stmt && double.TryParse(stmtResult, out _))
                     {
                     stmt[0].Current =

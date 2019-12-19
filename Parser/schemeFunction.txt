@@ -271,7 +271,7 @@ goto
 myFunction = (x, y) => {
     print(x)
     print(y)
-    return x + y
+    x + y
 }
 out = myFunction(555, 777)
 print(out)
@@ -390,17 +390,17 @@ $stackPopDrop
 
 
 
-
-
-
-
-
-
+stack: 37
+IP = 33
+myFunction = 3
+x = 555
+y = 777
+out = 1332
 
 myFunction
 24
 goto
-x
+x // ---------------- start myFunction body
 $stackSwapLast2
 =
 y
@@ -420,7 +420,7 @@ x
 y
 +
 $stackSwapLast2
-goto
+goto // ------------------ end body
 3
 =
 out

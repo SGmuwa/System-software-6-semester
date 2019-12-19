@@ -21,7 +21,7 @@ namespace Optimizing
                 return obj switch
                 {
                     Token t => t,//new Token(t.Type, t.Value);
-                    ReportParserCompile rpc => rpc,//new ReportParserCompile(rpc.Source, rpc.CurrentRule, rpc.Helper);
+                    ParserToken rpc => rpc,//new ReportParserCompile(rpc.Source, rpc.CurrentRule, rpc.Helper);
                     _ => throw new OptimizingException($"В дереве компиляции встретился неизвестный тип: {obj.GetType()}"),
                 };
             });

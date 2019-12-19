@@ -2,7 +2,7 @@
 
 namespace Parser
 {
-    public class ReportParserCompile
+    public class ParserToken
     {
         /// <summary>
         /// Кто добавил?
@@ -35,7 +35,7 @@ namespace Parser
         /// </summary>
         /// <param name="Source">Источник, кто добавил в компилятор запись.</param>
         /// <param name="Helper">Дополнительная информация о результатах парсера.</param>
-        public ReportParserCompile(Nonterminal Source, RuleOperator CurrentRule, int Helper = int.MinValue, ulong Id = ulong.MaxValue)
+        public ParserToken(Nonterminal Source, RuleOperator CurrentRule, int Helper = int.MinValue, ulong Id = ulong.MaxValue)
         {
             this.Source = Source;
             this.CurrentRule = CurrentRule;
@@ -47,6 +47,6 @@ namespace Parser
         }
 
         public override string ToString()
-            => $"{nameof(ReportParserCompile)}: {{ Id: RPC{Id}, {(Helper == int.MinValue ? "" : $"h: {Helper}, ")}rule: {CurrentRule}, src: {Source}}}";
+            => $"{nameof(ParserToken)}: {{ Id: RPC{Id}, {(Helper == int.MinValue ? "" : $"h: {Helper}, ")}rule: {CurrentRule}, src: {Source}}}";
     }
 }

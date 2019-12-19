@@ -5,7 +5,7 @@ namespace Parser
 {
     public class ReportParser
     {
-        public ReportParser(ReportParserCompile Compile = null)
+        public ReportParser(ParserToken Compile = null)
         {
             this.Compile = new TreeNode<object>(Compile);
         }
@@ -59,7 +59,7 @@ namespace Parser
             if (compile != null)
                 foreach (ITreeNode<object> o in compile)
                 {
-                    if (o.Current is ReportParserCompile nonterminal)
+                    if (o.Current is ParserToken nonterminal)
                     {
                         if (nonterminal.CurrentRule == RuleOperator.OR
                             && o.Count > 1)
