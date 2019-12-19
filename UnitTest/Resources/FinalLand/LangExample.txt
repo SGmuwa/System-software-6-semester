@@ -5,14 +5,14 @@ while(a < 10)
 	a = a + 1
 }
 test1 = 0
-if((HASHSET_CONTAINS 2) == 1) // Проверяем, что элемент 2 добавлен.
+if(HASHSET_CONTAINS 2 == 1) // Проверяем, что элемент 2 добавлен.
 {
 	test1 = 1 // Тест пройден.
 }
 // Проверяем удаление из hashset:
 HASHSET_REMOVE 2
 test2 = 0
-if((HASHSET_CONTAINS 2) == 0) // Если в hashset отсутствует элемент "2".
+if(HASHSET_CONTAINS 2 == 0) // Если в hashset отсутствует элемент "2".
 {
 	test2 = 1 // тест пройден.
 }
@@ -27,7 +27,7 @@ i = 0
 test3 = 1
 do
 {
-	if((LIST_CONTAINS i) == 0)
+	if(LIST_CONTAINS i == 0)
 	{
 		test3 = 0
 		i = 10
