@@ -157,9 +157,20 @@ namespace Optimizing.Example
                 {
                     int? indexMax = null;
                     for(int i = 0; i < IsNotUsedIndexes.Count; i++)
-                        if(var == IsNotUsedIndexes[i].Item2 && IsNotUsedIndexes[i].Item1 < ofLeft)
-                            if(!indexMax.HasValue || IsNotUsedIndexes[i].Item1 > IsNotUsedIndexes[indexMax.Value].Item1)
+                    {
+                        (int IPSet, string VarSet) = IsNotUsedIndexes[i]; // TODO DEBUG
+                        if(var == VarSet && IPSet == ofLeft)
+                        {
+                            if(!indexMax.HasValue)
                                 indexMax = i;
+                            else
+                            {
+                                var MaxTuple = IsNotUsedIndexes[indexMax.Value];
+                                if(IPSet > MaxTuple.Item1)
+                                    indexMax = i;
+                            }
+                        }
+                    }
                     if(indexMax.HasValue)
                         IsNotUsedIndexes.RemoveAt(indexMax.Value);
                 }
