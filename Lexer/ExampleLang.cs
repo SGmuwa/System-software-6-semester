@@ -29,6 +29,7 @@ namespace Lexer
                 LIST_REMOVE      = new Terminal(nameof(LIST_REMOVE),      "^LIST_REMOVE$"           ),
                 LIST_COUNT       = new Terminal(nameof(LIST_COUNT),       "^LIST_COUNT$"            ),
                 IMPLICATION      = new Terminal(nameof(IMPLICATION),      "^=>$"                    ),
+                ASYNC            = new Terminal(nameof(ASYNC),            "^async$"                 , 0),
                 /*                                                                                 
                  Те терминалы, которые ниже, по-сути нужны парсеру.                                
                  Для того, чтобы проанализировать выражение:                                       
