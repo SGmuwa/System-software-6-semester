@@ -1,7 +1,7 @@
 using StackMachine;
 using System.Collections.Generic;
 
-namespace Optimizing.Test
+namespace UnitTest
 {
     class StackMachinePrint : ExampleLang.MyMachineLang
     {

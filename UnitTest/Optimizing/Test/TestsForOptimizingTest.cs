@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using Lexer;
 using static Parser.ExampleLang.CommandsList;
 using Parser;
+using UnitTest;
 
 namespace Optimizing.Test
 {
