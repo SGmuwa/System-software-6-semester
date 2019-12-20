@@ -159,7 +159,7 @@ namespace Optimizing.Example
                     for(int i = 0; i < IsNotUsedIndexes.Count; i++)
                     {
                         (int IPSet, string VarSet) = IsNotUsedIndexes[i];
-                        if(var == VarSet && IPSet <= ofLeft)
+                        if(var == VarSet && IPSet <= ofLeft && IPSet != Machine.InstructionPointer)
                         {
                             if(!indexMax.HasValue)
                                 indexMax = i;

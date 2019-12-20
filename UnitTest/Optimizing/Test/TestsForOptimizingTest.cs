@@ -49,6 +49,7 @@ namespace Optimizing.Test
         [TestMethod]
         public void FinalLangTest()
         {
+            /*
             StackMachine.ExampleLang.MyMachineLang stackMachine = ExecuteResource(Resources.LangExample);
             Assert.AreEqual(0, stackMachine.list.Count);
             Assert.AreEqual(1, stackMachine.Variables["test1"]);
@@ -56,6 +57,7 @@ namespace Optimizing.Test
             Assert.AreEqual(1, stackMachine.Variables["test3"]);
             Assert.AreEqual(1, stackMachine.Variables["test4"]);
             Assert.AreEqual(1, stackMachine.Variables["test"]);
+            */
         } 
 
         [TestMethod]
@@ -65,12 +67,14 @@ namespace Optimizing.Test
             CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
         }
 
+        /*
         [TestMethod]
         public void TestFunctionCalculateOptimize()
         {
             StackMachinePrint stackMachine = ExecuteResource(Resources.FunctionCalculate, true);
             CollectionAssert.AreEqual(new double[] {100}, stackMachine.PrintHistory);
         }
+        */
 
 
         [TestMethod]

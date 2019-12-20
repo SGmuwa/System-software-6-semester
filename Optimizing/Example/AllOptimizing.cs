@@ -14,6 +14,7 @@ namespace Optimizing.Example
         {
             Assign_ExprStmtOptimizing.Instance,
             StmtOptimizing.Instance,
+            //OpOptimizing.Instance,
             Assign_ExprRemover.Instance
         };
 

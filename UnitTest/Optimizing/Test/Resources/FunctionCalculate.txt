@@ -9,4 +9,4 @@ fun1 = (a) => {
     a
 }
 
-print(fun1(-5))
+print(fun1(0-5))
