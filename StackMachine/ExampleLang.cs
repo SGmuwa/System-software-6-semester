@@ -197,9 +197,9 @@ namespace StackMachine
                 },
                 [Async] = _ =>
                 {
-                    int addr_for_new_thread = _.InstructionPointer + 1;
+                    int addr_for_new_thread = _.InstructionPointer;
                     _.commands[Goto](_);
-                    new Thread(_.ExecuteThread).Start();
+                    new Thread(() => _.ExecuteThread(addr_for_new_thread)).Start();
                 },
             };
 
@@ -248,10 +248,10 @@ namespace StackMachine
                     Thread.Sleep(2);
             }
 
-            private void ExecuteThread()
+            private void ExecuteThread(int instructionPointer = -1)
             {
                 Stacks[Thread.CurrentThread] = new Stack<string>();
-                InstructionPointers[Thread.CurrentThread] = -1;
+                InstructionPointer = instructionPointer;
                 try
                 {
                     while (++InstructionPointer < Code.Count)

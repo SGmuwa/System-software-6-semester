@@ -69,10 +69,17 @@ namespace StackMachine.Test
         [TestMethod]
         public void ExecuteAsyncSimple()
         {
-            List<double> expect = new List<double>() {1, 2, 3};
-            List<double>[] stories = new List<double>[10];
+            List<double> expect = new List<double>();
+            for(int i = 0; i < 1000; i++)
+                expect.Add(i);
+            List<double>[] stories = new List<double>[20];
+            (ReportParser report, List<Token> tokens, List<string> commands) = Compile(Resources.AsyncSimple);
             for(int i = 0; i < stories.Length; i++)
-                stories[i] = ExecuteResource(Resources.AsyncSimple).PrintHistory;
+            {
+                StackMachinePrint stackMachine = new StackMachinePrint();
+                stackMachine.Execute(commands);
+                stories[i] = stackMachine.PrintHistory;
+            }
             for(int i = 0; i < stories.Length; i++)
             {
                 Console.WriteLine(string.Join(" ", stories[i]));
