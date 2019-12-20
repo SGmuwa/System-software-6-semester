@@ -111,4 +111,7 @@
   <data name="Parser_SimpleFunction" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources/Parser_SimpleFunction.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
   </data> 
+  <data name="AsyncSimple" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>Resources/AsyncSimple.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;utf-8</value>
+  </data> 
 </root>

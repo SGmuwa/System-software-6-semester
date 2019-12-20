@@ -1,0 +1,9 @@
+async {
+    print(1)
+}
+async {
+    print(2)
+}
+async {
+    print(3)
+}

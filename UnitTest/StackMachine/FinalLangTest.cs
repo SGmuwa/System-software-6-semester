@@ -6,6 +6,7 @@ using Lexer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Parser;
 using UnitTest;
+using System.Linq;
 
 namespace StackMachine.Test
 {
@@ -63,6 +64,26 @@ namespace StackMachine.Test
             StackMachinePrint stackMachine = ExecuteResource(Resources.function);
             Console.WriteLine(string.Join(" ", stackMachine.PrintHistory));
             CollectionAssert.AreEqual(new double[] {2}, stackMachine.PrintHistory);
+        }
+
+        [TestMethod]
+        public void ExecuteAsyncSimple()
+        {
+            List<double> expect = new List<double>() {1, 2, 3};
+            List<double>[] stories = new List<double>[10];
+            for(int i = 0; i < stories.Length; i++)
+                stories[i] = ExecuteResource(Resources.AsyncSimple).PrintHistory;
+            for(int i = 0; i < stories.Length; i++)
+            {
+                Console.WriteLine(string.Join(" ", stories[i]));
+                CollectionAssert.AreEquivalent(expect, stories[i]);
+            }
+            for(int i = 1; i < stories.Length; i++)
+            {
+                if(!stories[0].SequenceEqual(stories[i]))
+                    return;
+            }
+            Assert.Fail();
         }
 
         public void ExecuteParser_SimpleFunction()

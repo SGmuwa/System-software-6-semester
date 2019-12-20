@@ -190,5 +190,6 @@ namespace UnitTest {
         internal static string function => ResourceManager.GetString("function", resourceCulture);
 
         internal static string Parser_SimpleFunction => ResourceManager.GetString("Parser_SimpleFunction", resourceCulture);
+        internal static string AsyncSimple => ResourceManager.GetString("AsyncSimple", resourceCulture);
     }
 }
