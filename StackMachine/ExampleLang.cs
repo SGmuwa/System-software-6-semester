@@ -48,7 +48,6 @@ namespace StackMachine
                     string var = _.Stack.Pop();
                     if (IsNumber(var))
                         throw new KeyNotFoundException();
-                    Console.WriteLine($"var: {var}"); // DEBUG
                     _.Variables[var] = stmt;
                 },
                 [Plus] = _ =>

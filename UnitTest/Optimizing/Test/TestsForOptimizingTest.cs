@@ -40,7 +40,7 @@ namespace Optimizing.Test
         [DataRow("VarInVar", "a 3 = b 6 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
         [DataRow("VarVarInVar", "a 7 = b 14 = 10 a print goto! $stackPopDrop 15 b print goto! $stackPopDrop")]
         [DataRow("If", "1 6 !f a 1 = b 2 = 13 a print goto! $stackPopDrop 18 b print goto! $stackPopDrop")]
-        public void OptimizingSimple(string resourceName, string expect)
+        public void OptimizingSimpleTest(string resourceName, string expect)
         {
             var output = CompileAndOptimizing(Resources.GetString(resourceName));
             CollectionAssert.AreEqual(expect.Split(' '), output);
