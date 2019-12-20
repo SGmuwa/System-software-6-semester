@@ -67,7 +67,7 @@ namespace UnitTest
 
         [TestMethod]
         public void Parser_function()
-            => CheckTest(Resources.function, true, 14);
+            => CheckTest(Resources.function, true, 15);
 
         [TestMethod]
         public void Parser_for()

@@ -69,8 +69,8 @@ namespace Parser
                 commands.Add(CommandsList.Assign);
             }, RuleOperator.OR, VAR, VARAndComma),
             argsInit = new Nonterminal(nameof(argsInit), MoreInserter, ZERO_AND_MORE, argInit_element),
-            valueAndComma = new Nonterminal(nameof(valueAndComma), AndInserter(0), AND, value, COMMA),
-            argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, OR, value, valueAndComma),
+            stmtAndComma = new Nonterminal(nameof(stmtAndComma), AndInserter(0), AND, stmt, COMMA),
+            argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, OR, stmt, stmtAndComma),
             argsCall = new Nonterminal(nameof(argsCall), MoreInserterInvert, ZERO_AND_MORE, argCall_element),
             call_function_expr = new Nonterminal(nameof(call_function_expr), (commands, insert, helper) => {
                 int idToReplace = commands.Count;
