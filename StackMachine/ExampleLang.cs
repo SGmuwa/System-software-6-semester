@@ -2,6 +2,7 @@
 using MyTypes.LinkedList;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using static Parser.ExampleLang;
 using static Parser.ExampleLang.CommandsList;
 
@@ -9,22 +10,42 @@ namespace StackMachine
 {
     public static class ExampleLang
     {
-        public class MyMachineLang : AbstractStackExecuteLang
+        public class MyMachineLang : IExecuteLang
         {
             /// <summary>
             /// Создаёт новый экземпляр стековой машины.
             /// </summary>
             /// <param name="startVariables">Реализация таблицы переменных.</param>
             public MyMachineLang(IDictionary<string, double> startVariables = null)
-                : base(startVariables)
-            { }
+            {
+                if (startVariables != null)
+                    Variables = startVariables;
+                else
+                    Variables = Variables = new Dictionary<string, double>();
+            }
+            /// <summary>
+            /// Таблица переменных для стековой машины.
+            /// </summary>
+            public IDictionary<string, double> Variables { get; protected set; }
 
+            /// <summary>
+            /// Стек, который хранит в себе исполняемый код.
+            /// </summary>
+            protected readonly Dictionary<Thread, Stack<string>> Stacks
+                = new Dictionary<Thread, Stack<string>>();
+
+            protected Stack<string> Stack => Stacks[Thread.CurrentThread];
+
+            /// <summary>
+            /// Указатель на текущую выполняемую операцию.
+            /// </summary>
+            public int InstructionPointer { get; protected set; } = -1;
             protected readonly Dictionary<string, Action<MyMachineLang>> commands = new Dictionary<string, Action<MyMachineLang>>()
             {
                 [Goto] = _ =>
                 {
                     string address = _.Stack.Peek();
-                    if(address == "print")
+                    if (address == "print")
                     {
                         _.Stack.Pop();
                         int output = _.Print(_.PopStk());
@@ -152,13 +173,17 @@ namespace StackMachine
                 {
                     _.Stack.Pop();
                 },
-                [StackSwapLast2] = _ => 
+                [StackSwapLast2] = _ =>
                 {
                     string a = _.Stack.Pop();
                     string b = _.Stack.Pop();
                     _.Stack.Push(a);
                     _.Stack.Push(b);
-                }
+                },
+                [Exit] = _ =>
+                {
+
+                },
             };
 
             public readonly ICollection<double> list
@@ -166,9 +191,9 @@ namespace StackMachine
             public readonly ISet<double> set
                 = new MyHashSet<double>();
 
-            protected override void ExecuteCommand(string command)
+            protected virtual void ExecuteCommand(string command)
             {
-                commands.GetValueOrDefault(command, _ => 
+                commands.GetValueOrDefault(command, _ =>
                 { // Объявлена новая переменная.
                     _.Stack.Push(command);
                 }).Invoke(this);
@@ -194,6 +219,13 @@ namespace StackMachine
                 if (double.TryParse(VarOrDigit, out double result))
                     return result;
                 return Variables[VarOrDigit];
+            }
+
+            public void Execute(IList<string> code)
+            {
+                Stacks[Thread.CurrentThread] = new Stack<string>();
+                while (++InstructionPointer < code.Count)
+                    ExecuteCommand(code[InstructionPointer]);
             }
         }
     }
