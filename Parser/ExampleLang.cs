@@ -20,12 +20,12 @@ namespace Parser
         }
         private static void MoreInserter(List<string> commands, ActionInsert insert, int helper)
         {
-            for(int i = 0; i < helper; i++)
+            for (int i = 0; i < helper; i++)
                 insert(i);
         }
         private static void MoreInserterInvert(List<string> commands, ActionInsert insert, int helper)
         {
-            for(int i = helper - 1; i >= 0; i--)
+            for (int i = helper - 1; i >= 0; i--)
                 insert(i);
         }
         private static void WordAndValue(List<string> commands, ActionInsert insert, int helper)
@@ -63,7 +63,8 @@ namespace Parser
                    )
                ),
             VARAndComma = new Nonterminal(nameof(VARAndComma), AndInserter(0), RuleOperator.AND, VAR, COMMA),
-            argInit_element = new Nonterminal(nameof(argInit_element), (commands, insert, helper) => {
+            argInit_element = new Nonterminal(nameof(argInit_element), (commands, insert, helper) =>
+            {
                 insert(); // Вставка переменной.
                 commands.Add(CommandsList.StackSwapLast2);
                 commands.Add(CommandsList.Assign);
@@ -72,7 +73,8 @@ namespace Parser
             stmtAndComma = new Nonterminal(nameof(stmtAndComma), AndInserter(0), AND, stmt, COMMA),
             argCall_element = new Nonterminal(nameof(argCall_element), OrInserter, OR, stmt, stmtAndComma),
             argsCall = new Nonterminal(nameof(argsCall), MoreInserterInvert, ZERO_AND_MORE, argCall_element),
-            call_function_expr = new Nonterminal(nameof(call_function_expr), (commands, insert, helper) => {
+            call_function_expr = new Nonterminal(nameof(call_function_expr), (commands, insert, helper) =>
+            {
                 int idToReplace = commands.Count;
                 commands.Add(CommandsList.NotImplement);
                 insert(2);
@@ -80,7 +82,8 @@ namespace Parser
                 commands.Add(CommandsList.Goto);
                 commands[idToReplace] = commands.Count.ToString();
             }, RuleOperator.AND, VAR, L_B, argsCall, R_B),
-            call_function_without_output_expr = new Nonterminal(nameof(call_function_without_output_expr), (commands, insert, helper) => {
+            call_function_without_output_expr = new Nonterminal(nameof(call_function_without_output_expr), (commands, insert, helper) =>
+            {
                 int idToReplace = commands.Count;
                 commands.Add(CommandsList.NotImplement);
                 insert(2);
@@ -90,7 +93,8 @@ namespace Parser
                 commands.Add(CommandsList.StackPopDrop);
             }, AND, VAR, L_B, argsCall, R_B),
             body = new Nonterminal(nameof(body), AndInserter(1), AND, L_QB, lang, R_QB),
-            initFunction_expr = new Nonterminal(nameof(initFunction_expr), (commands, insert, helper) => {
+            initFunction_expr = new Nonterminal(nameof(initFunction_expr), (commands, insert, helper) =>
+            {
                 int indexToSet = commands.Count;
                 commands.Add(CommandsList.NotImplement);
                 commands.Add(CommandsList.Goto);
@@ -177,7 +181,17 @@ namespace Parser
                    commands[indexAddrFalse] = commands.Count.ToString();
                }, AND, FOR_KW, L_B, /*2*/assign_expr, COMMA, /*4*/for_condition, COMMA, /*6*/assign_expr, R_B, /*8*/ body),
             cycle_expr = new Nonterminal(nameof(cycle_expr), OrInserter, OR, while_expr, do_while_expr, for_expr),
+            async_expr = new Nonterminal(nameof(async_expr), (commands, insert, helper) =>
+            {
+                int indexOfAddressExit = commands.Count;
+                commands.Add(CommandsList.NotImplement);
+                commands.Add(CommandsList.Async);
+                insert(1);
+                commands.Add(CommandsList.Exit);
+                commands[indexOfAddressExit] = commands.Count.ToString();
+            }, AND, ASYNC, body),
             expr = new Nonterminal(nameof(expr), OrInserter, OR,
+                async_expr,
                 call_function_without_output_expr,
                 assign_expr,
                 if_expr_OR_ifelse_expr,
@@ -190,7 +204,7 @@ namespace Parser
         /// Свод правил языка.
         /// </summary>
         public static readonly ParserLang Lang = new ParserLang(lang);
-        
+
         static ExampleLang()
         {
             lang.Add(expr);
@@ -257,6 +271,9 @@ namespace Parser
             /// Меняет местами в стеке два последний элемента.
             /// </summary>
             public static readonly string StackSwapLast2 = "$stackSwapLast2";
+
+            public static readonly string Async = "$async";
+            public static readonly string Exit = "$exit";
         }
     }
 }
