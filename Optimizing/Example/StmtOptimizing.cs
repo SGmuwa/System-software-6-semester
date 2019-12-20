@@ -75,7 +75,7 @@ namespace Optimizing.Example
 
         class OptimizingStackMachine : StackMachine.ExampleLang.MyMachineLang
         {
-            public OptimizingStackMachine(IDictionary<string, double> startVariables = null) : base(startVariables)
+            public OptimizingStackMachine(IDictionary<string, double> startVariables = null) : base(startVariables, false)
             {
             }
 

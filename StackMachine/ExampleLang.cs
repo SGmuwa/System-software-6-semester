@@ -16,30 +16,41 @@ namespace StackMachine
             /// Создаёт новый экземпляр стековой машины.
             /// </summary>
             /// <param name="startVariables">Реализация таблицы переменных.</param>
-            public MyMachineLang(IDictionary<string, double> startVariables = null)
+            public MyMachineLang(IDictionary<string, double> startVariables = null, bool isNeedRemoveStacks = true)
             {
+                IsNeedRemoveStacks = isNeedRemoveStacks;
                 if (startVariables != null)
                     Variables = startVariables;
                 else
                     Variables = Variables = new Dictionary<string, double>();
             }
+
+            private bool IsNeedRemoveStacks;
+
             /// <summary>
             /// Таблица переменных для стековой машины.
             /// </summary>
             public IDictionary<string, double> Variables { get; protected set; }
 
-            /// <summary>
-            /// Стек, который хранит в себе исполняемый код.
-            /// </summary>
             protected readonly Dictionary<Thread, Stack<string>> Stacks
                 = new Dictionary<Thread, Stack<string>>();
 
+            /// <summary>
+            /// Стек, который хранит в себе исполняемый код.
+            /// </summary>
             protected Stack<string> Stack => Stacks[Thread.CurrentThread];
 
             /// <summary>
             /// Указатель на текущую выполняемую операцию.
             /// </summary>
-            public int InstructionPointer { get; protected set; } = -1;
+            public int InstructionPointer
+            {
+                get => InstructionPointers[Thread.CurrentThread];
+                protected set => InstructionPointers[Thread.CurrentThread] = value;
+            }
+
+            protected readonly Dictionary<Thread, int> InstructionPointers
+                = new Dictionary<Thread, int>();
             protected readonly Dictionary<string, Action<MyMachineLang>> commands = new Dictionary<string, Action<MyMachineLang>>()
             {
                 [Goto] = _ =>
@@ -182,7 +193,13 @@ namespace StackMachine
                 },
                 [Exit] = _ =>
                 {
-
+                    _.InstructionPointer = int.MaxValue - 1;
+                },
+                [Async] = _ =>
+                {
+                    int addr_for_new_thread = _.InstructionPointer + 1;
+                    _.commands[Goto](_);
+                    new Thread(_.ExecuteThread).Start();
                 },
             };
 
@@ -221,11 +238,33 @@ namespace StackMachine
                 return Variables[VarOrDigit];
             }
 
+            private IList<string> Code;
+
             public void Execute(IList<string> code)
             {
+                Code = code;
+                ExecuteThread();
+                while (Stacks.Count > 0 && IsNeedRemoveStacks)
+                    Thread.Sleep(2);
+            }
+
+            private void ExecuteThread()
+            {
                 Stacks[Thread.CurrentThread] = new Stack<string>();
-                while (++InstructionPointer < code.Count)
-                    ExecuteCommand(code[InstructionPointer]);
+                InstructionPointers[Thread.CurrentThread] = -1;
+                try
+                {
+                    while (++InstructionPointer < Code.Count)
+                        ExecuteCommand(Code[InstructionPointer]);
+                }
+                finally
+                {
+                    if (IsNeedRemoveStacks)
+                    {
+                        Stacks.Remove(Thread.CurrentThread);
+                        InstructionPointers.Remove(Thread.CurrentThread);
+                    }
+                }
             }
         }
     }
