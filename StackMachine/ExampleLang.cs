@@ -1,6 +1,7 @@
 ﻿using MyTypes;
 using MyTypes.LinkedList;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using static Parser.ExampleLang;
@@ -22,7 +23,7 @@ namespace StackMachine
                 if (startVariables != null)
                     Variables = startVariables;
                 else
-                    Variables = Variables = new Dictionary<string, double>();
+                    Variables = Variables = new ConcurrentDictionary<string, double>();
             }
 
             private bool IsNeedRemoveStacks;
@@ -32,8 +33,8 @@ namespace StackMachine
             /// </summary>
             public IDictionary<string, double> Variables { get; protected set; }
 
-            protected readonly Dictionary<Thread, Stack<string>> Stacks
-                = new Dictionary<Thread, Stack<string>>();
+            protected readonly ConcurrentDictionary<Thread, Stack<string>> Stacks
+                = new ConcurrentDictionary<Thread, Stack<string>>();
 
             /// <summary>
             /// Стек, который хранит в себе исполняемый код.
@@ -49,9 +50,9 @@ namespace StackMachine
                 protected set => InstructionPointers[Thread.CurrentThread] = value;
             }
 
-            protected readonly Dictionary<Thread, int> InstructionPointers
-                = new Dictionary<Thread, int>();
-            protected readonly Dictionary<string, Action<MyMachineLang>> commands = new Dictionary<string, Action<MyMachineLang>>()
+            protected readonly ConcurrentDictionary<Thread, int> InstructionPointers
+                = new ConcurrentDictionary<Thread, int>();
+            protected readonly ConcurrentDictionary<string, Action<MyMachineLang>> commands = new ConcurrentDictionary<string, Action<MyMachineLang>>()
             {
                 [Goto] = _ =>
                 {
@@ -261,8 +262,8 @@ namespace StackMachine
                 {
                     if (IsNeedRemoveStacks)
                     {
-                        Stacks.Remove(Thread.CurrentThread);
-                        InstructionPointers.Remove(Thread.CurrentThread);
+                        Stacks.TryRemove(Thread.CurrentThread, out _);
+                        InstructionPointers.TryRemove(Thread.CurrentThread, out _);
                     }
                 }
             }

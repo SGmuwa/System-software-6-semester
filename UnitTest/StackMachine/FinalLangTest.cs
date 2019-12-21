@@ -63,31 +63,31 @@ namespace StackMachine.Test
         {
             StackMachinePrint stackMachine = ExecuteResource(Resources.function);
             Console.WriteLine(string.Join(" ", stackMachine.PrintHistory));
-            CollectionAssert.AreEqual(new double[] {2}, stackMachine.PrintHistory);
+            CollectionAssert.AreEqual(new double[] { 2 }, stackMachine.PrintHistory);
         }
 
         [TestMethod]
         public void ExecuteAsyncSimple()
         {
             List<double> expect = new List<double>();
-            for(int i = 0; i < 1000; i++)
+            for (int i = 0; i < 1000; i++)
                 expect.Add(i);
-            List<double>[] stories = new List<double>[20];
+            List<double>[] stories = new List<double>[1000];
             (ReportParser report, List<Token> tokens, List<string> commands) = Compile(Resources.AsyncSimple);
-            for(int i = 0; i < stories.Length; i++)
+            for (int i = 0; i < stories.Length; i++)
             {
                 StackMachinePrint stackMachine = new StackMachinePrint();
                 stackMachine.Execute(commands);
                 stories[i] = stackMachine.PrintHistory;
             }
-            for(int i = 0; i < stories.Length; i++)
+            for (int i = 0; i < stories.Length; i++)
             {
                 Console.WriteLine(string.Join(" ", stories[i]));
                 CollectionAssert.AreEquivalent(expect, stories[i]);
             }
-            for(int i = 1; i < stories.Length; i++)
+            for (int i = 1; i < stories.Length; i++)
             {
-                if(!stories[0].SequenceEqual(stories[i]))
+                if (!stories[0].SequenceEqual(stories[i]))
                     return;
             }
             Assert.Fail();
@@ -97,13 +97,13 @@ namespace StackMachine.Test
         {
             StackMachinePrint stackMachine = ExecuteResource(Resources.Parser_SimpleFunction);
             Console.WriteLine(string.Join(" ", stackMachine.PrintHistory));
-            CollectionAssert.AreEqual(new double[] {1}, stackMachine.PrintHistory);
+            CollectionAssert.AreEqual(new double[] { 1 }, stackMachine.PrintHistory);
         }
 
         private static (ReportParser, List<Token>, List<string>) Compile(string resourceBody)
         {
             List<Token> tokens;
-            using(StreamReader stream = StringToStream(resourceBody))
+            using (StreamReader stream = StringToStream(resourceBody))
                 tokens = Lexer.ExampleLang.Lang.SearchTokens(stream);
             tokens.RemoveAll(t => t.Type.Name.StartsWith("CH_"));
             Console.WriteLine($":: tokens:\n{string.Join('\n', tokens)}");
